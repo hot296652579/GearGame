@@ -17,7 +17,9 @@ export class LevelManager {
     public levelModel: LevelModel = null;
     currentLevel: Node = null!;
     randomLevel: number = 0;
-    private _levelBaseLegs: number = 25;//关卡大腿数
+    private _levelLegs: number = 25;//关卡大腿数
+    //关卡大腿增加数
+    private _levelLegsAdd: number = 10;
     private _levelGetGold: number = 0;
 
     initilizeModel(): void {
@@ -32,7 +34,8 @@ export class LevelManager {
     /** 清除关卡数据*/
     clearLevelData(): void {
         this._levelGetGold = 0;
-        this._levelBaseLegs = 25;
+        this._levelLegs = 25;
+        this._levelLegsAdd = 10;
         this.levelModel.clearLevel();
     }
 
@@ -45,9 +48,9 @@ export class LevelManager {
      * 增加基础关卡腿数
      * @param amount 增加数量
      */
-    addLevelBaseLegs(amount: number): void {
+    addLevelLegs(amount: number): void {
         if (amount > 0) {
-            this._levelBaseLegs += amount;
+            this._levelLegs += amount;
         }
     }
 
@@ -57,10 +60,10 @@ export class LevelManager {
      * @returns 是否扣除成功
      */
     deductLevelBaseLegs(amount: number): boolean {
-        if (amount <= 0 || this._levelBaseLegs < amount) {
+        if (amount <= 0 || this._levelLegs < amount) {
             return false;
         }
-        this._levelBaseLegs -= amount;
+        this._levelLegs -= amount;
         return true;
     }
 
@@ -68,7 +71,14 @@ export class LevelManager {
      * 获取当前基础关卡腿数
      */
     getLevelBaseLegs(): number {
-        return this._levelBaseLegs;
+        return this._levelLegs;
+    }
+
+    /**
+     * 获取当前关卡腿数增加数
+     */
+    getLevelLegsAdd(): number {
+        return this._levelLegsAdd;
     }
 
     /**

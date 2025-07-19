@@ -8,6 +8,7 @@ import { GearComponent } from '../Gear/GearComponent';
 import { GearType } from '../Enum/GameEnums';
 import { GameManager } from '../Manager/GameManager';
 import { BattleTop } from './BattleTop';
+import { LevelManager } from '../Manager/LevelMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('BottomShop')
@@ -17,6 +18,8 @@ export class BottomShop extends Component {
     btnRefProp: Node = null!; 
     @property(Node)
     btnBattle: Node = null!;
+    @property(Node)
+    btnAddLegs: Node = null!;
 
     private gridRoot: Node = null!; // 网格根节点
 
@@ -30,6 +33,7 @@ export class BottomShop extends Component {
     protected onLoad(): void {
         this.btnRefProp.on(Input.EventType.TOUCH_END, this.onTouchEndRef, this);
         this.btnBattle.on(Input.EventType.TOUCH_END, this.onTouchEndBattle, this);
+        this.btnAddLegs.on(Input.EventType.TOUCH_END, this.onTouchEndAddLegs, this);
     }
 
     private _originalY: number = 0; // 记录初始Y坐标
@@ -121,6 +125,15 @@ export class BottomShop extends Component {
         GameManager.instance.startEnemyWaves();
 
         // GameManager.instance.testSpawnSoldier();
+    }
+
+    //增加关卡腿数
+    private onTouchEndAddLegs(event: EventTouch) {
+        const levelLegsAdd = LevelManager.instance.getLevelLegsAdd();
+        LevelManager.instance.addLevelLegs(levelLegsAdd);
+        LevelManager.instance.upgradeLevel();
+        this.updateBattleTopLegs();
+        this.updateBottomShopGearPrices();
     }
 
     private addDragEvent(btn: Node) {
@@ -270,25 +283,33 @@ export class BottomShop extends Component {
         if (placedRow !== -1 && placedCol !== -1) {
             GearSystem.instance.setPlaceGear(btn, placedRow, placedCol);
             
-            // 更新BattleTop显示的腿数
-            const battleTop = AliensGlobalInstance.instance.battleTop.getComponent(BattleTop)!;
-            if (battleTop) {
-                battleTop.updateLegs();
-            }
-            
-            // 更新BottomShop中所有齿轮的价格显示
-            const props = this.node.getChildByName('Props').children;
-            for (const prop of props) {
-                const gearNode = prop.children[0];
-                if (gearNode) {
-                    const gearComp = gearNode.getComponent(GearComponent);
-                    if (gearComp) {
-                        gearComp.showLegs();
-                    }
+            this.updateBattleTopLegs();
+            this.updateBottomShopGearPrices();
+        }
+    }
+
+    //更新战斗顶部腿数
+    private updateBattleTopLegs() {
+        const battleTop = AliensGlobalInstance.instance.battleTop.getComponent(BattleTop)!;
+        if (battleTop) {
+            battleTop.updateLegs();
+        }
+    }
+
+    //更新底部商店齿轮价格
+    private updateBottomShopGearPrices() {
+        const props = this.node.getChildByName('Props').children;
+        for (const prop of props) {
+            const gearNode = prop.children[0];
+            if (gearNode) {
+                const gearComp = gearNode.getComponent(GearComponent);
+                if (gearComp) {
+                    gearComp.showLegs();
                 }
             }
         }
     }
+
 }
 
 
