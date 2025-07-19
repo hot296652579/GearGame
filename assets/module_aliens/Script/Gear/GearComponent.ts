@@ -1,4 +1,4 @@
-import { _decorator, Component, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
+import { _decorator, Color, Component, Label, Node, Sprite, SpriteFrame, UITransform } from 'cc';
 import { IGearBase, GearType, PropType, SoldierType } from '../Enum/GameEnums';
 import { SoldierSystem } from '../Soldier/SoldierSystem';
 import { PropSystem } from '../Prop/PropSystem';
@@ -6,6 +6,7 @@ import { Camp } from '../Soldier/ISoldierStats';
 import { GearSystem } from './GearSystem';
 import { resLoader, ResLoader } from 'db://assets/core_tgx/base/ResLoader';
 import { GameConfig } from '../GameConfig';
+import { LevelManager } from '../Manager/LevelMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('GearComponent')
@@ -119,6 +120,13 @@ export class GearComponent extends Component implements IGearBase {
     //显示价值
     showLegs() {
         this.lbLegs.string = `${this.legValue}`;
+        this.updatePriceColor(this.canAfford());
+    }
+
+    private updatePriceColor(canBuy: boolean) {
+        if (this.lbLegs) {
+            this.lbLegs.color = canBuy ? new Color(255, 255, 255) : new Color(255, 0, 0);
+        }
     }
 
     /**显示冷却效果*/
@@ -150,6 +158,25 @@ export class GearComponent extends Component implements IGearBase {
             this.mask.active = true;
             this.mask.getComponent(UITransform)!.height = 80; // 重置为最大高度
         }
+    }
+
+    /**
+     * 检查是否可以购买齿轮
+     * @returns 是否可以购买
+     */
+    public canAfford(): boolean {
+        return LevelManager.instance.getLevelBaseLegs() >= this.legValue;
+    }
+
+    /**
+     * 尝试扣除大腿价值
+     * @returns 是否扣除成功
+     */
+    public tryDeductLegs(): boolean {
+        if (this.canAfford()) {
+            return LevelManager.instance.deductLevelBaseLegs(this.legValue);
+        }
+        return false;
     }
 
     /*** 获取最终速率*/

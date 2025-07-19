@@ -22,7 +22,7 @@ export class AliensGlobalInstance extends Component {
         this.gameBattle = find("Canvas/BattleUI")!; //游戏界面战斗UI
         this.gameGrids = find("Canvas/BattleUI/Gears/Grids")!; //游戏战斗格子UI
         this.homeTop = find("Canvas/TopLeft")!;
-        this.battleTop = find("Canvas/BattleUI/TopLeft")!; //游戏界面顶部UI
+        this.battleTop = find("Canvas/BattleUI/BattleTop")!; 
     }
 
     public camera: Camera = null!; //相机

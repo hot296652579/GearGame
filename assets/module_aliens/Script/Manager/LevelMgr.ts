@@ -17,7 +17,7 @@ export class LevelManager {
     public levelModel: LevelModel = null;
     currentLevel: Node = null!;
     randomLevel: number = 0;
-    private _levelBaseLegs: number = 25;//关卡初始基础腿数
+    private _levelBaseLegs: number = 25;//关卡大腿数
     private _levelGetGold: number = 0;
 
     initilizeModel(): void {

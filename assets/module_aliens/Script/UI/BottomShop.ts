@@ -7,6 +7,7 @@ import { GearGrids } from '../Gear/GearGrids';
 import { GearComponent } from '../Gear/GearComponent';
 import { GearType } from '../Enum/GameEnums';
 import { GameManager } from '../Manager/GameManager';
+import { BattleTop } from './BattleTop';
 const { ccclass, property } = _decorator;
 
 @ccclass('BottomShop')
@@ -182,6 +183,18 @@ export class BottomShop extends Component {
             
             // 只有Selected节点或没有子节点时表示可放置
             if (childrenCount === 0 || (childrenCount === 1 && hasSelected)) {
+                const gearComp = btn.getComponent(GearComponent);
+                if (gearComp && !gearComp.tryDeductLegs()) {
+                    // 大腿价值不足，回到原位置
+                    const originalPos = this.btnOriginalPositions.get(btn);
+                    if (originalPos) {
+                        tween(btn)
+                            .to(ANIM_TIME, { position: originalPos })
+                            .start();
+                    }
+                    return;
+                }
+                
                 const selectedNode = this._currentSelectedNode.getChildByName('Selected');
                 if (selectedNode) selectedNode.active = false;
                 
@@ -256,6 +269,24 @@ export class BottomShop extends Component {
         // 如果有有效放置，记录位置
         if (placedRow !== -1 && placedCol !== -1) {
             GearSystem.instance.setPlaceGear(btn, placedRow, placedCol);
+            
+            // 更新BattleTop显示的腿数
+            const battleTop = AliensGlobalInstance.instance.battleTop.getComponent(BattleTop)!;
+            if (battleTop) {
+                battleTop.updateLegs();
+            }
+            
+            // 更新BottomShop中所有齿轮的价格显示
+            const props = this.node.getChildByName('Props').children;
+            for (const prop of props) {
+                const gearNode = prop.children[0];
+                if (gearNode) {
+                    const gearComp = gearNode.getComponent(GearComponent);
+                    if (gearComp) {
+                        gearComp.showLegs();
+                    }
+                }
+            }
         }
     }
 }
