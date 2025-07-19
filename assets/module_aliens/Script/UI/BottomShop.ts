@@ -1,4 +1,4 @@
-import { _decorator, Component, EventTouch, Input, instantiate, Node, Prefab, tween, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, Input, instantiate, Label, Node, Prefab, tween, Vec3 } from 'cc';
 import { resLoader, ResLoader } from 'db://assets/core_tgx/base/ResLoader';
 import { ModuleDef } from 'db://assets/scripts/ModuleDef';
 import { ANIM_TIME, GearSystem } from '../Gear/GearSystem';
@@ -20,6 +20,9 @@ export class BottomShop extends Component {
     btnBattle: Node = null!;
     @property(Node)
     btnAddLegs: Node = null!;
+
+    @property(Label) //出售价格文本
+    lbSellPrice: Label = null!;
 
     private gridRoot: Node = null!; // 网格根节点
 
