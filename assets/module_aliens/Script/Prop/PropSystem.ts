@@ -4,6 +4,7 @@ import { SoldierSystem } from '../Soldier/SoldierSystem';
 import { BaseSoldier } from '../Soldier/SoldierBase';
 import { Camp } from '../Soldier/ISoldierStats';
 import { NodePoolManager } from '../NodePoolManager';
+import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
 
 const { ccclass, property } = _decorator;
 
@@ -39,6 +40,7 @@ export class PropSystem {
     //冰冻道具
     freezeProp() {
         console.log('冰冻士兵');
+        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('ice'), 1.0);
         const enemies = SoldierSystem.instance.getEnemySoldiers(Camp.Player);
         
         enemies.forEach(soldier => {
@@ -90,7 +92,7 @@ export class PropSystem {
     //恢复生命道具
     healProp() {
         const allies = SoldierSystem.instance.getEnemySoldiers(Camp.Enemy); // 获取我方士兵
-        
+        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('barrier'), 1.0);
         allies.forEach(soldier => {
             // 恢复50%血量
             const healAmount = Math.ceil(soldier.stats.hp * 0.5);

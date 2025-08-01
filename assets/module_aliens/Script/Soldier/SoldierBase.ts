@@ -148,12 +148,6 @@ export class BaseSoldier extends Component {
     }
 
     protected attack(): void {
-        if(this.stats.type === SoldierType.Melee){
-            AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('meleeAttack'), 1.0);
-        }else{
-            AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('superAttack'), 1.0);
-        }
-
         const target = this.findNearestTarget();
         // console.log('攻击目标:',target);
         if (!target) return;

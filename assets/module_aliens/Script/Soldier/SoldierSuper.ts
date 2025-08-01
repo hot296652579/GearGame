@@ -8,5 +8,7 @@ const { ccclass } = _decorator;
 export class SoldierSuper extends BaseSoldier {
     protected attack(): void {
         super.attack(); // 调用父类的攻击方法，实现基本攻击逻辑。
+
+        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('superAttack'), 1.0);
     }
 }
