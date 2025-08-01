@@ -1,5 +1,6 @@
 import { _decorator } from 'cc';
 import { BaseSoldier } from './SoldierBase';
+import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
 const { ccclass } = _decorator;
 
 /**超级兵*/

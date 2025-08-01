@@ -14,9 +14,67 @@ export class UserManager {
 
     public userModel: UserModel = null;
 
+    // 本地存储键名
+    private readonly SOLDIER_LEVEL_KEY = 'soldier_levels';
+    private readonly CASTLE_LEVEL_KEY = 'castle_level';
+
+    // 新增金币存储键名
+    private readonly GOLD_KEY = 'user_gold';
+
     initilizeModel(): void {
         this.userModel = new UserModel();
-        this.userModel.initialize();
+        
+        if (!GlobalConfig.isDebug) {
+            this.loadFromLocalStorage();
+        }
+    }
+
+    private loadFromLocalStorage(): void {
+        // 加载金币
+        const gold = sys.localStorage.getItem(this.GOLD_KEY);
+        if (gold) {
+            const goldAmount = parseInt(gold);
+            if (!isNaN(goldAmount)) {
+                this.userModel.glod = goldAmount;
+            }
+        } else {
+            this.userModel.glod = 500;
+        }
+
+        // 加载兵种等级
+        const soldierLevels = this.getSoldierLevelsFromStorage();
+        if (soldierLevels) {
+            // 遍历所有兵种类型
+            [SoldierType.Melee, SoldierType.Ranged, SoldierType.Super].forEach(type => {
+                if (soldierLevels[type] !== undefined) {
+                    this.userModel.setSoldierLevel(type, soldierLevels[type]);
+                } else {
+                    // 如果本地存储中没有该兵种记录，使用默认等级1
+                    this.userModel.setSoldierLevel(type, 1);
+                }
+            });
+        }
+
+        // 加载城池等级
+        const castleLevel = sys.localStorage.getItem(this.CASTLE_LEVEL_KEY);
+        if (castleLevel) {
+            const level = parseInt(castleLevel);
+            if (!isNaN(level)) {
+                this.userModel.setCastleLevel(level);
+            }
+        }
+    }
+
+    // 保存城池等级到本地存储
+    saveCastleLevel(level: number): void {
+        if (GlobalConfig.isDebug) return;
+        sys.localStorage.setItem(this.CASTLE_LEVEL_KEY, level.toString());
+    }
+
+    // 从本地存储获取兵种等级
+    private getSoldierLevelsFromStorage(): Record<SoldierType, number> | null {
+        const data = sys.localStorage.getItem(this.SOLDIER_LEVEL_KEY);
+        return data ? JSON.parse(data) : null;
     }
 
     // 测试模式下的快捷方法
@@ -32,6 +90,16 @@ export class UserManager {
         }
     }
 
+    // 保存兵种等级到本地存储
+    saveSoldierLevel(type: SoldierType, level: number): void {
+        if (GlobalConfig.isDebug) return;
+
+        const levels = this.getSoldierLevelsFromStorage() || {};
+        // 确保保存所有兵种类型
+        levels[type] = level;
+        sys.localStorage.setItem(this.SOLDIER_LEVEL_KEY, JSON.stringify(levels));
+    }
+
     /**
      * 增加玩家金币
      * @param amount 增加数量
@@ -39,6 +107,7 @@ export class UserManager {
     addGold(amount: number): void {
         if (amount > 0) {
             this.userModel.glod += amount;
+            this.saveGoldToStorage();
         }
     }
 
@@ -52,6 +121,13 @@ export class UserManager {
             return false;
         }
         this.userModel.glod -= amount;
+        this.saveGoldToStorage();
         return true;
+    }
+
+    // 金币存储方法
+    private saveGoldToStorage(): void {
+        if (GlobalConfig.isDebug) return;
+        sys.localStorage.setItem(this.GOLD_KEY, this.userModel.glod.toString());
     }
 }

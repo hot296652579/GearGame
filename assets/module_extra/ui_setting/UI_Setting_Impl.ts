@@ -19,7 +19,7 @@ export class UI_Setting_Impl extends UI_Setting {
     protected onCreated(): void {
         let layout = this.layout as Layout_Setting;
         this.onButtonEvent(layout.btnClose, () => {
-            AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicIdName(2), 1.0);
+            AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('dianji'), 1.0);
             this.hide();
         });
 

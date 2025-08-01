@@ -4,6 +4,8 @@ import { GearGrids } from './GearGrids';
 import { GearComponent } from './GearComponent';
 import { GearType, PropType, SoldierType } from '../Enum/GameEnums';
 import { GameManager } from '../Manager/GameManager';
+import { LevelManager } from '../Manager/LevelMgr';
+import { BattleTop } from '../UI/BattleTop';
 const { ccclass, property } = _decorator;
 
 //动画时长
@@ -39,7 +41,8 @@ export class GearSystem {
 
     //获取发动机位置
     getEnginePos() {
-        return this.enginePos;  
+        const config = LevelManager.instance.getCurrentLevelConfig();
+        return config.enginePos;  
     }
 
     //设置存放的齿轮
@@ -253,38 +256,122 @@ export class GearSystem {
         return this.generateGearRules(); 
     }
 
-    /** 生成齿轮规则 - 随机生成3个齿轮(士兵或加速道具) */
+    /** 生成齿轮规则 */
     generateGearRules() {
+        const pgLevel = AliensGlobalInstance.instance.battleTop.getComponent(BattleTop).currentLevel;
         const gears = [];
-        const soldierTypes = [SoldierType.Melee, SoldierType.Ranged, SoldierType.Super];
         
-        // 随机选择一种兵种类型
-        const randomSoldierType = soldierTypes[Math.floor(Math.random() * soldierTypes.length)];
-        gears.push({
-            type: GearType.Soldier,
-            subType: randomSoldierType,
-            level: 1
-        });
+        // 第一级特殊处理
+        if (pgLevel === 1) {
+            gears.push(
+                { type: GearType.SpeedUp, level: 1 },
+                { type: GearType.SpeedUp, level: 1 },
+                { type: GearType.Soldier, subType: SoldierType.Melee, level: 1 }
+            );
+            return gears;
+        }
 
-        // 生成加速齿轮
-        gears.push({
-            type: GearType.SpeedUp,
-            level: Math.floor(Math.random() * 2) + 1
-        });
+        // 权重配置
+        const gearTypeWeights = {
+            [GearType.SpeedUp]: 50, 
+            [GearType.Soldier]: 30,
+            [GearType.Prop]: 20
+        };
 
-        const propTypes = [PropType.Freeze, PropType.Heal];
-        //取0或则1
-        const randomPropType = propTypes[Math.floor(Math.random() * propTypes.length)];
-        // 生成道具
-        gears.push({
-            type: GearType.Prop,
-            subType: randomPropType,
-            level: Math.floor(Math.random() * 2) + 1
-        });
+        const soldierTypeWeights = {
+            [SoldierType.Melee]: 40,
+            [SoldierType.Ranged]: 40,
+            [SoldierType.Super]: 20
+        };
 
-        console.log('生成的齿轮规则:', gears);
+        // 加速齿轮等级权重计算
+        const getSpeedUpLevelWeights = () => {
+            const maxLevel = Math.min(8, Math.floor(pgLevel / 3) + 1);
+            const weights: Record<number, number> = {}; // 明确类型为数字键值对
+            for (let i = 1; i <= maxLevel; i *= 2) {
+                weights[i] = 100 / i;
+            }
+            return weights;
+        };
+
+        // 生成3个齿轮
+        for (let i = 0; i < 3; i++) {
+            // 选择齿轮类型
+            const gearType = this.weightedRandom([
+                [GearType.SpeedUp, gearTypeWeights[GearType.SpeedUp]],
+                [GearType.Soldier, gearTypeWeights[GearType.Soldier]],
+                [GearType.Prop, gearTypeWeights[GearType.Prop]]
+            ]);
+
+            switch (gearType) {
+                case GearType.SpeedUp:
+                    const speedUpLevelWeights = getSpeedUpLevelWeights();
+                    let level = this.weightedRandom(
+                        Object.entries(speedUpLevelWeights).map(([lvl, weight]) => [parseInt(lvl), weight] as [number, number])
+                    );
+                    gears.push({ type: GearType.SpeedUp, level });
+                    break;
+
+                case GearType.Soldier:
+                    const soldierType = this.weightedRandom([
+                        [SoldierType.Melee, soldierTypeWeights[SoldierType.Melee]],
+                        [SoldierType.Ranged, soldierTypeWeights[SoldierType.Ranged]],
+                        [SoldierType.Super, soldierTypeWeights[SoldierType.Super]]
+                    ]);
+                    gears.push({ type: GearType.Soldier, subType: soldierType, level: 1 });
+                    break;
+
+                case GearType.Prop:
+                    const propTypes = [PropType.Freeze, PropType.Heal];
+                    const propType = propTypes[Math.floor(Math.random() * propTypes.length)];
+                    gears.push({ type: GearType.Prop, subType: propType, level: 1 });
+                    break;
+            }
+        }
+
+        // 打乱顺序
+        return this.shuffleArray(gears);
+    }
+
+    // 加权随机选择
+    private weightedRandom<T>(items: [T, number][]): T {
+        const totalWeight = items.reduce((sum, [_, weight]) => sum + weight, 0);
+        let random = Math.random() * totalWeight;
         
-        return gears;
+        for (const [item, weight] of items) {
+            if (random < weight) return item;
+            random -= weight;
+        }
+        
+        return items[0][0];
+    }
+
+    // 数组打乱
+    private shuffleArray<T>(array: T[]): T[] {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }
+
+    //根据等级返回对应速率
+    rateByLevel(level: number): number {
+        // 检查等级是否是2的倍数
+        if ((level & (level - 1)) !== 0) {
+            console.warn(`Invalid gear level: ${level}, must be power of 2`);
+            level = 1;
+        }
+
+        // 基础速率和增长系数
+        const baseRate = 0.03;
+        const growthFactor = 0.02;
+        
+        // 计算速率: 0.03 * (2^(n-1)) + 0.02 * (2^(n-1) - 1)
+        // 其中n是等级的对数(以2为底)
+        const n = Math.log2(level);
+        return baseRate * Math.pow(2, n) + growthFactor * (Math.pow(2, n) - 1);
     }
 
     /**

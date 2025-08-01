@@ -69,17 +69,12 @@ export class ArmItem extends Component {
         // 升级兵种
         const newLevel = currentLevel + 1;
         UserManager.instance.userModel.setSoldierLevel(this.armType, newLevel);
+        UserManager.instance.saveSoldierLevel(this.armType, newLevel); 
 
         // 刷新UI显示
-        const newStats = SoldierSystem.instance.getSoldierStats(this.armType, newLevel);
-        this.updateArmStats(
-            newStats.name,
-            newStats.attack,
-            newStats.upgradeAttack,
-            newStats.hp,
-            newStats.upgradeHp,
-            newStats.upgradeCost
-        );
+        const homeArm = AliensGlobalInstance.instance.homeArm;
+        homeArm.getComponent(HomeArm).showArmUI(); 
+        homeArm.getComponent(HomeArm).showCastleUI(); 
 
         // 通知主界面刷新金币显示
         if (this.homeTop) {
@@ -114,6 +109,7 @@ export class ArmItem extends Component {
         this.armHpUp.string = `+${hpUp.toFixed(2)}`;
         this.armUpgradePrice.string = `${upgradeCost}`;
         // 更新价格颜色
+        // console.log('用户剩余金币:',UserManager.instance.userModel.glod, ',升级所需:',upgradeCost);
         const canUpgrade = UserManager.instance.userModel.glod >= upgradeCost;
         this.updatePriceColor(canUpgrade);
     }

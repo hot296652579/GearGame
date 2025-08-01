@@ -6,6 +6,13 @@ import { NodePoolManager } from '../NodePoolManager';
 import { BloodBar } from '../UI/BloodBar';
 import { Castle } from '../Castle/Castle';
 import { CastleManager } from '../Castle/CastleManager';
+import { GameConfig } from '../GameConfig';
+import { AliensGlobalInstance } from '../AliensGlobalInstance';
+import { BattleTop } from '../UI/BattleTop';
+import { LevelManager } from '../Manager/LevelMgr';
+import { UserManager } from '../Manager/UserMgr';
+import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
+import { SoldierType } from '../Enum/GameEnums';
 const { ccclass } = _decorator;
 
 /** 士兵基类*/
@@ -21,7 +28,7 @@ export class BaseSoldier extends Component {
         this.stats = stats;
         this.camp = camp;
 
-        // console.log('阵营:',this.camp,',stats:',stats);
+        console.log('阵营:',this.camp,',stats:',stats);
         
         if (GameManager.instance && GameManager.instance.playerCastle && GameManager.instance.enemyCastle) {
             this._targetCastle = camp === Camp.Player ? 
@@ -141,6 +148,12 @@ export class BaseSoldier extends Component {
     }
 
     protected attack(): void {
+        if(this.stats.type === SoldierType.Melee){
+            AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('meleeAttack'), 1.0);
+        }else{
+            AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('superAttack'), 1.0);
+        }
+
         const target = this.findNearestTarget();
         // console.log('攻击目标:',target);
         if (!target) return;
@@ -152,8 +165,8 @@ export class BaseSoldier extends Component {
             const bloodBar = NodePoolManager.instance.getNode('blood', target.node);
             if (bloodBar) {
                 const bloodScript = bloodBar.getComponent(BloodBar);
-                if (bloodScript && bloodScript.showBloodBar) {
-                    bloodScript.showBloodBar(this.stats.attack, target.node, target.camp); 
+                if (bloodScript) {
+                    bloodScript.showBloodProgress(target.stats.hp, target.stats.maxHp);
                 }
             }
         } else if (target instanceof Castle) {
@@ -163,6 +176,7 @@ export class BaseSoldier extends Component {
     }
 
     public takeDamage(amount: number) {
+        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('enemyHit'), 1.0);
         this.stats.hp -= amount;
         if (this.stats.hp <= 0) {
             this.die();
@@ -171,6 +185,22 @@ export class BaseSoldier extends Component {
     }
 
     protected die() {
+        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('enemyDie'), 1.0);
+        // 如果是敌方士兵死亡，增加经验和关卡腿数
+        if (this.camp === Camp.Enemy) {
+            const exp = GameConfig.getSoldierConfig(this.stats.type).deadExp;
+            const leg = GameConfig.getSoldierConfig(this.stats.type).deadLeg;
+            const gold = GameConfig.getSoldierConfig(this.stats.type).deadGold;
+            const battleTop = AliensGlobalInstance.instance.battleTop.getComponent(BattleTop);
+            battleTop.addExp(exp);
+
+            LevelManager.instance.addLevelLegs(leg);
+            battleTop.updateLegs();
+            LevelManager.instance.addLevelGold(gold);
+            battleTop.updateGold();
+            
+            UserManager.instance.addGold(gold);
+        }
         this.node.destroy();
     }
 }

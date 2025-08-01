@@ -42,6 +42,11 @@ export class AliensAudioMgr {
         return 'Audio/' + this._musicConfigModel.getNameById(id);
     }
 
+    /** 根据名字返回音频路径*/
+    public static getMusicPathByName(name: string): string {
+        return 'Audio/' + name; 
+    }
+
     /**
  * stop the audio play
  */

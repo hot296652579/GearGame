@@ -6,6 +6,8 @@ import { ModuleDef } from "./ModuleDef";
 export class UI_AboutMe extends tgxUIController { }
 export class UI_Setting extends tgxUIController { }
 export class UI_BattleResult extends tgxUIController { }
+export class UI_Reward extends tgxUIController { }
+export class UI_Pause extends tgxUIController { }
 export class UI_BattleGambit extends tgxUIController { }
 export class UI_PowerUp extends tgxUIController { }
 export class UI_TimeExpan extends tgxUIController { }
@@ -19,3 +21,5 @@ tgxModuleContext.attachModule(UI_BattleGambit, ModuleDef.MODULE_ALIENS);
 tgxModuleContext.attachModule(UI_PowerUp, ModuleDef.MODULE_ALIENS);
 tgxModuleContext.attachModule(UI_TimeExpan, ModuleDef.MODULE_ALIENS);
 tgxModuleContext.attachModule(UI_BattleResult, ModuleDef.MODULE_ALIENS);
+tgxModuleContext.attachModule(UI_Reward, ModuleDef.MODULE_ALIENS);
+tgxModuleContext.attachModule(UI_Pause, ModuleDef.MODULE_ALIENS);

@@ -1,6 +1,7 @@
 import { _decorator, Component, Node } from 'cc';
 import { AliensGlobalInstance } from '../AliensGlobalInstance';
 import { GameManager } from '../Manager/GameManager';
+import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
 const { ccclass, property } = _decorator;
 
 /**主界面战斗*/
@@ -15,6 +16,7 @@ export class HomeBattle extends Component {
     }
 
     onClickStart() {
+        AliensAudioMgr.play(AliensAudioMgr.getMusicPathByName('fightBGM'), 1.0);
         AliensGlobalInstance.instance.gameBattle.active = true;
         GameManager.instance.startGame();
     }

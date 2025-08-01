@@ -13,16 +13,13 @@ export class UserModel {
 
     constructor() {}
 
-    initialize() {
-       this.glod = 500;
-    }
-
     getSoldierLevel(type: SoldierType): number {
         return this.soldierLevels[type] || 1;
     }
 
     setSoldierLevel(type: SoldierType, level: number): void {
         this.soldierLevels[type] = level;
+        console.log(`设置兵种 ${type} 等级为 ${level}`);
     }
 
     getCastleLevel(): number {

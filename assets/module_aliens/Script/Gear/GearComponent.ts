@@ -102,11 +102,10 @@ export class GearComponent extends Component implements IGearBase {
         } else if (gearId.startsWith('SpeedUp')) {
             this.type = GearType.SpeedUp;
             const level = parseInt(gearId.split('_')[1]) || 1;
-            
             this.legValue = GameConfig.GearLegValue[this.type] * level || 999;
             this.level = level;
-            this.growth = 0.1 * level; // 每级增加10%
-            this.lbGear.string = `${level} 增加:${this.growth}`;
+            this.growth = GearSystem.instance.rateByLevel(level);;
+            this.lbGear.string = `${level}`;
         }
 
         this.sellPrice = Math.floor(this.legValue / 2);
@@ -120,7 +119,7 @@ export class GearComponent extends Component implements IGearBase {
     //显示价值
     showLegs() {
         this.lbLegs.string = `${this.legValue}`;
-        this.updatePriceColor(this.canAfford());
+        this.updatePriceColor(LevelManager.instance.canAfford(this.legValue));
     }
 
     private updatePriceColor(canBuy: boolean) {
@@ -156,27 +155,8 @@ export class GearComponent extends Component implements IGearBase {
         this.used.active = false;
         if(this.mask) {
             this.mask.active = true;
-            this.mask.getComponent(UITransform)!.height = 80; // 重置为最大高度
+            this.mask.getComponent(UITransform)!.height = 80; 
         }
-    }
-
-    /**
-     * 检查是否可以购买齿轮
-     * @returns 是否可以购买
-     */
-    public canAfford(): boolean {
-        return LevelManager.instance.getLevelBaseLegs() >= this.legValue;
-    }
-
-    /**
-     * 尝试扣除大腿价值
-     * @returns 是否扣除成功
-     */
-    public tryDeductLegs(): boolean {
-        if (this.canAfford()) {
-            return LevelManager.instance.deductLevelBaseLegs(this.legValue);
-        }
-        return false;
     }
 
     /*** 获取最终速率*/
@@ -195,7 +175,7 @@ export class GearComponent extends Component implements IGearBase {
         if (this.rate) {
             const label = this.rate.getComponentInChildren(Label);
             if (label) {
-                label.string = `${rate.toFixed(1)}/s`;
+                label.string = `${rate.toFixed(2)}/s`;
             }
         }
     }
@@ -254,15 +234,14 @@ export class GearComponent extends Component implements IGearBase {
             return false;
         }
         // 升级当前齿轮
-        this.level += 1;
+        this.level = this.level * 2;
         
         // 根据齿轮类型更新属性
         switch(this.type) {
             case GearType.SpeedUp:
-                //保留两位小数
-                this.growth = parseFloat((0.1 * this.level).toFixed(2));
+                this.growth = GearSystem.instance.rateByLevel(this.level);
                 this.sellPrice = 100 + (this.level - 1) * 25;
-                this.lbGear.string = `${this.level} 增加:${this.growth}`;
+                this.lbGear.string = `${this.level}`;
                 break;
                 
             case GearType.Soldier:

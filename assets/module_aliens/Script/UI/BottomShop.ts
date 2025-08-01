@@ -1,4 +1,4 @@
-import { _decorator, Component, EventTouch, Input, instantiate, Label, Node, Prefab, tween, Vec3 } from 'cc';
+import { _decorator, Component, EventTouch, Input, instantiate, Label, Node, Prefab, tween, UITransform, Vec2, Vec3 } from 'cc';
 import { resLoader, ResLoader } from 'db://assets/core_tgx/base/ResLoader';
 import { ModuleDef } from 'db://assets/scripts/ModuleDef';
 import { ANIM_TIME, GearSystem } from '../Gear/GearSystem';
@@ -9,6 +9,7 @@ import { GearType } from '../Enum/GameEnums';
 import { GameManager } from '../Manager/GameManager';
 import { BattleTop } from './BattleTop';
 import { LevelManager } from '../Manager/LevelMgr';
+import { GameUtil } from '../GameUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('BottomShop')
@@ -20,6 +21,8 @@ export class BottomShop extends Component {
     btnBattle: Node = null!;
     @property(Node)
     btnAddLegs: Node = null!;
+    @property(Node)
+    btnSell: Node = null!;
 
     @property(Label) //出售价格文本
     lbSellPrice: Label = null!;
@@ -46,7 +49,6 @@ export class BottomShop extends Component {
         this.girdsCol = GearSystem.instance.cols; 
         this.gridRoot = AliensGlobalInstance.instance.gameGrids;
         this._originalY = this.node.position.y; // 保存初始Y坐标
-        this.createGear();
     }
 
     /**
@@ -55,6 +57,9 @@ export class BottomShop extends Component {
     public riseUp() {
         tween(this.node)
             .to(ANIM_TIME, { position: new Vec3(this.node.position.x, -400, 0) })
+            .call(() => { 
+                this.createGear(); 
+            })
             .start();
     }
 
@@ -118,7 +123,11 @@ export class BottomShop extends Component {
 
     //刷新齿轮
     private onTouchEndRef(event: EventTouch) {
-        this.createGear();
+        if(LevelManager.instance.tryDeductLegs(10)){
+            this.createGear();
+            this.updateBattleTopLegs();
+            this.updateBottomShopGearPrices();
+        }
     }
 
     //继续战斗
@@ -126,8 +135,6 @@ export class BottomShop extends Component {
         this.returnToOriginal();
         GameManager.instance.resumeGame();
         GameManager.instance.startEnemyWaves();
-
-        // GameManager.instance.testSpawnSoldier();
     }
 
     //增加关卡腿数
@@ -137,6 +144,13 @@ export class BottomShop extends Component {
         LevelManager.instance.upgradeLevel();
         this.updateBattleTopLegs();
         this.updateBottomShopGearPrices();
+        this.addLegEffect(); 
+    }
+
+    private addLegEffect(){
+        const from = this.btnAddLegs;
+        const to = AliensGlobalInstance.instance.battleTop.getChildByName('UserLegs')!;
+        GameUtil.flyToPosition(from, to, 5, 'leg');
     }
 
     private addDragEvent(btn: Node) {
@@ -149,7 +163,6 @@ export class BottomShop extends Component {
 
     private onTouchStart(event: EventTouch) {
         const btn = event.target as Node;
-        btn.setSiblingIndex(999);
         // 记录触摸点与按钮中心的偏移量
         const touchPos = event.getUILocation();
         const btnWorldPos = btn.position;
@@ -193,6 +206,24 @@ export class BottomShop extends Component {
         let placedRow = -1;
         let placedCol = -1;
         
+        // 检查是否拖动到出售按钮
+        const touchPos = event.getUILocation();
+        const sellBtnRect = this.btnSell.getComponent(UITransform)!.getBoundingBoxToWorld();
+        
+        if (sellBtnRect.contains(new Vec2(touchPos.x, touchPos.y))) {
+            if (btn && btn.parent.parent !== this.node.getChildByName('Props')) {
+                // 出售齿轮，增加腿数
+                LevelManager.instance.addLevelLegs(gearComp.sellPrice);
+                GearSystem.instance.removeGear(btn);
+                btn.destroy();
+                
+                // 更新UI
+                this.updateBattleTopLegs();
+                this.updateBottomShopGearPrices();
+                return;
+            }
+        }
+
         if (this._currentSelectedNode) {
             const childrenCount = this._currentSelectedNode.children.length;
             const hasSelected = this._currentSelectedNode.children.some(child => child.name === 'Selected');
@@ -200,15 +231,18 @@ export class BottomShop extends Component {
             // 只有Selected节点或没有子节点时表示可放置
             if (childrenCount === 0 || (childrenCount === 1 && hasSelected)) {
                 const gearComp = btn.getComponent(GearComponent);
-                if (gearComp && !gearComp.tryDeductLegs()) {
-                    // 大腿价值不足，回到原位置
-                    const originalPos = this.btnOriginalPositions.get(btn);
-                    if (originalPos) {
-                        tween(btn)
-                            .to(ANIM_TIME, { position: originalPos })
-                            .start();
+                
+                if(btn.parent.parent == this.node.getChildByName('Props')){
+                    if (!LevelManager.instance.tryDeductLegs(gearComp.legValue)) {
+                        // 大腿价值不足，回到原位置
+                        const originalPos = this.btnOriginalPositions.get(btn);
+                        if (originalPos) {
+                            tween(btn)
+                                .to(ANIM_TIME, { position: originalPos })
+                                .start();
+                        }
+                        return;
                     }
-                    return;
                 }
                 
                 const selectedNode = this._currentSelectedNode.getChildByName('Selected');
@@ -258,6 +292,10 @@ export class BottomShop extends Component {
                             const index = this.gridRoot.children.indexOf(this._currentSelectedNode);
                             placedRow = Math.floor(index / (this.girdsRow + 2));
                             placedCol = index % this.girdsCol;
+                        }
+
+                        if (gearComp) {
+                            gearComp.gridStyle();
                         }
                     } else {
                         // 不能合并，回到原位置

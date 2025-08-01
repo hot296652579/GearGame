@@ -23,6 +23,10 @@ export class Castle extends Component {
     onLoad() {
     }
 
+    start(): void {
+        this.hpBar.node.active = false;
+    }
+
     setCastleHp(hp: number) {
         this.maxHp = hp;
         this.hp = hp;
@@ -53,6 +57,7 @@ export class Castle extends Component {
     }
 
     updateHpBar() {
+        this.hpBar.node.active = true;
         const percent = this.hp / this.maxHp;
         this.hpBar.progress = percent;
     }

@@ -5,6 +5,7 @@ import { GameManager } from '../Manager/GameManager';
 import { NodePoolManager } from '../NodePoolManager';
 import { Castle } from '../Castle/Castle';
 import { Bow } from './Bow';
+import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('SoldierRemote')
@@ -29,6 +30,7 @@ export class SoldierRemote extends BaseSoldier {
     }
 
     private shootBow(target: BaseSoldier | Castle) {
+        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('bullet'), 1.0);
         // 从对象池获取弓箭
         const bulletNode = NodePoolManager.instance.getNode('bow', this.node);
         bulletNode.setParent(this.node)

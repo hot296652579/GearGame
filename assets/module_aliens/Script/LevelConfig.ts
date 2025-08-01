@@ -13,23 +13,25 @@ export class LevelConfig {
     }
 
     /**
-     * 获取关卡波次配置
+     * 获取关卡配置
      * @param level 关卡等级
      */
     public getLevelConfig(level: number) {
         return this.levelConfig[level] || this.levelConfig[1];
     }
 
-    // 关卡波次配置
+    castleBaseHp = 110;
+    enemyCastleBaseHp = 220;
+
+    // 关卡相关配置
     private levelConfig = {
         1:{
-            playerCastle: 110,
-            enemyCastle: 120,
-        },
-        2:{
-            playerCastle: 150,
-            enemyCastle: 150,
-        },
+            enginePos:[1,2],            //永动机的位置
+            reward:{
+                gold:1100,              //金币
+                loseGold:110,           //失败时获得金币
+            }
+        }
     }
 }
 

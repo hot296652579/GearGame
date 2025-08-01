@@ -6,6 +6,7 @@ import { ArmItem } from './ArmItem';
 import { CastleManager } from '../Castle/CastleManager';
 import { HomeTop } from './HomeTop';
 import { AliensGlobalInstance } from '../AliensGlobalInstance';
+import { GlobalConfig } from 'db://assets/start/Config/GlobalConfig';
 const { ccclass, property } = _decorator;
 
 /**主界面兵种UI*/
@@ -15,6 +16,9 @@ export class HomeArm extends Component {
     //基地血量
     @property(Label)
     castleCurHp: Label = null;
+    //基地等级
+    @property(Label)
+    castleLv: Label = null;
 
     //基地下一等级血量
     @property(Label)
@@ -42,16 +46,22 @@ export class HomeArm extends Component {
     start() {
         this.homeTop = AliensGlobalInstance.instance.homeTop;
         // 测试模式下设置兵等级
-        UserManager.instance.debugSetSoldierLevel(SoldierType.Melee, 1);
-        UserManager.instance.debugSetSoldierLevel(SoldierType.Super, 1);
-        UserManager.instance.debugSetSoldierLevel(SoldierType.Ranged, 1);
-
-        UserManager.instance.debugSetCastleLevel(1);
+        if (GlobalConfig.isDebug) {
+            UserManager.instance.userModel.setSoldierLevel(SoldierType.Melee, 1);
+            UserManager.instance.userModel.setSoldierLevel(SoldierType.Super, 1);
+            UserManager.instance.userModel.setSoldierLevel(SoldierType.Ranged, 1);
+            UserManager.instance.debugSetCastleLevel(1);
+        }
 
         this.showArmUI();
         this.showCastleUI();
 
-        this.castleUpgradeBtn.on(Node.EventType.TOUCH_END, this.onUpgradeClick, this);
+        this.castleUpgradeBtn.on(Node.EventType.TOUCH_END, this.onCastleUpgradeBtn, this);
+    }
+
+    protected onEnable(): void {
+        this.showArmUI();
+        this.showCastleUI();
     }
 
     //显示基地UI
@@ -64,8 +74,10 @@ export class HomeArm extends Component {
         this.castleUpgradePrice.string = `${castleStats.upgradeCost}`;
         
         // 根据金币是否足够设置价格颜色
+
         const canUpgrade = UserManager.instance.userModel.glod >= castleStats.upgradeCost;
         this.castleUpgradePrice.color = canUpgrade ? new Color(0, 0, 0) : new Color(255, 0, 0);
+        this.castleLv.string = `${castleLevel}`;
     }
 
     //显示兵种UI
@@ -95,7 +107,7 @@ export class HomeArm extends Component {
         });
     }
 
-    onUpgradeClick() {
+    onCastleUpgradeBtn() {
         const currentLevel = UserManager.instance.userModel.getCastleLevel();
         const stats = CastleManager.instance.getLevelCastleHpUpCost(currentLevel);
         
@@ -108,8 +120,10 @@ export class HomeArm extends Component {
         // 升级基地
         const newLevel = currentLevel + 1;
         UserManager.instance.userModel.setCastleLevel(newLevel);
+        UserManager.instance.saveCastleLevel(newLevel); 
 
         // 刷新UI显示
+        this.showArmUI();
         this.showCastleUI();
 
         // 通知主界面刷新金币显示

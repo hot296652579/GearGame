@@ -4,6 +4,7 @@ const { ccclass, property } = _decorator;
 
 // 波次配置接口
 export interface IWaveConfig {
+    exp: number[];  //每波次的经验值  
     waves: {
         delay: number;
         enemies: {
@@ -35,37 +36,28 @@ export class WavesConfig {
     // 关卡波次配置
     private _waveConfigs: Record<number, IWaveConfig> = {
         1: {
+            exp:[6,11,18,25],
             waves: [
                 {
                     delay: 5,
                     enemies: [
                         {type: SoldierType.Melee, count: 1, level: 1},
-                        {type: SoldierType.Ranged, count: 1, level: 1},
-                    ]
-                },
-                {
-                    delay: 8,
-                    enemies: [
-                        {type: SoldierType.Super, count: 1, level: 1},
-                        {type: SoldierType.Ranged, count: 1, level: 1}
-                    ]
-                }
-            ]
-        },
-        2: {
-            waves: [
-                {
-                    delay: 5,
-                    enemies: [
-                        {type: SoldierType.Ranged, count: 4, level: 1},
-                        {type: SoldierType.Super, count: 1, level: 1}
+                        // {type: SoldierType.Ranged, count: 1, level: 1}
                     ]
                 },
                 {
                     delay: 10,
                     enemies: [
-                        {type: SoldierType.Melee, count: 6, level: 1},
-                        {type: SoldierType.Ranged, count: 3, level: 2}
+                        {type: SoldierType.Melee, count: 2, level: 1},
+                        // {type: SoldierType.Ranged, count: 1, level: 1}
+                    ]
+                },
+                {
+                    delay: 15,
+                    enemies: [
+                        {type: SoldierType.Melee, count: 1, level: 1},
+                        {type: SoldierType.Ranged, count: 1, level: 1},
+                        {type: SoldierType.Super, count: 1, level: 1},
                     ]
                 }
             ]

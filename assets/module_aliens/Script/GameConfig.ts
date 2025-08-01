@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from 'cc';
+import { _decorator, Component, Node, sp } from 'cc';
 import { GearType, PropType, SoldierType } from './Enum/GameEnums';
 const { ccclass, property } = _decorator;
 
@@ -19,6 +19,10 @@ export class GameConfig {
             upgradeCost: 220,
             name: '龙骑士',
             deadGold: 1,
+            deadExp:3,
+            deadLeg:1,
+            speed:80,
+            attackRange:110
         },
         [SoldierType.Super]: { // 超级兵
             attack: 10,
@@ -26,6 +30,10 @@ export class GameConfig {
             upgradeCost: 2200,
             name: '超级兵',
             deadGold: 6,
+            deadExp:8,
+            deadLeg:5,
+            speed:60,
+            attackRange:120
         },
         [SoldierType.Ranged]: { // 远程(弓箭手)
             attack: 8,
@@ -33,6 +41,10 @@ export class GameConfig {
             upgradeCost: 280,
             name: '弓箭手',
             deadGold: 3,
+            deadExp:5,
+            deadLeg:3,
+            speed:100,
+            attackRange:200
         }
     };
 

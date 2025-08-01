@@ -5,6 +5,8 @@ import { Camp } from './ISoldierStats';
 import { NodePoolManager } from '../NodePoolManager';
 import { BaseSoldier } from './SoldierBase';
 import { GameConfig } from '../GameConfig';
+import { UserManager } from '../Manager/UserMgr';
+import { LevelManager } from '../Manager/LevelMgr';
 
 //士兵升级公式:基础值*1.1^（n-1)
 //金币消耗公式:基础值*1.2^（n-1）
@@ -31,20 +33,27 @@ export class SoldierSystem {
     public spawnSoldier(type: SoldierType, camp: Camp) {
         let parent:Node = camp === Camp.Player ? this.soldierParentSelf : this.soldierParentEnemy;
         const node = NodePoolManager.instance.getNode(type,parent);
-        node.setPosition(0,0,0);
+        const randomY = Math.random() * 50 - 25;
+        node.setPosition(0,randomY,0);
 
+        let soldierLv:number = 1;
+        if(camp === Camp.Player) {
+            soldierLv = UserManager.instance.userModel.getSoldierLevel(type);
+        }else{
+            soldierLv = LevelManager.instance.levelModel.level;
+        }
+
+        const soldierState = SoldierSystem.instance.getSoldierStats(type, soldierLv);
         const script = node.getComponent(BaseSoldier);
-        //先暂给假数据
         const stats = {
             type: type,
-            moveSpeed: type == SoldierType.Ranged ? 80 : 100, // 移动速度
-            attackRange: type == SoldierType.Ranged ? 250 : 110, // 攻击范围 
-            attackInterval:  type == SoldierType.Ranged ? 1 : 1, // 攻击间隔（秒）
-            attack: 10, // 攻击力
-            level: 1, // 等级
-            hp: 100, // 生命值
-            soldiderExp: 10, // 经验
-            deadGold: 10, // 死亡获得金币
+            moveSpeed: soldierState.speed, // 移动速度
+            attackRange: soldierState.attackRange, // 攻击范围 
+            attackInterval:  1, // 攻击间隔（秒）
+            attack: soldierState.attack, // 攻击力
+            level: soldierLv, // 等级
+            hp: soldierState.hp, // 生命值
+            maxHp: soldierState.hp, // 最大生命值
         }
         script.init(stats, camp);
         return node;
@@ -78,7 +87,7 @@ export class SoldierSystem {
      * @param type 兵的类型
      * @param level 兵的等级
     */
-    public getSoldierStats(type: SoldierType, level: number): {name:string, attack: number,upgradeAttack:number, hp: number,upgradeHp:number, upgradeCost: number } {
+    public getSoldierStats(type: SoldierType, level: number): {name:string, attack: number,upgradeAttack:number, hp: number,upgradeHp:number, upgradeCost: number,speed:number,attackRange:number } {
         const baseConfig = GameConfig.getSoldierConfig(type);
 
         // 计算当前攻击力: 基础攻击 * 1.1^(当前等级-1)
@@ -96,13 +105,18 @@ export class SoldierSystem {
         // 计算升级消耗: 基础消耗 * 1.2^(当前等级-1) (保持整数)
         const upgradeCost = Math.floor(baseConfig.upgradeCost * Math.pow(1.2, level - 1));
 
+        const speed = baseConfig.speed;
+        const attackRange = baseConfig.attackRange;
+
         return { 
             name:baseConfig.name,
             attack, 
             upgradeAttack,
             hp, 
             upgradeHp,
-            upgradeCost 
+            upgradeCost,
+            speed,
+            attackRange
         };
     }
 

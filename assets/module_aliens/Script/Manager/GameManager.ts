@@ -10,6 +10,11 @@ import { BottomShop } from '../UI/BottomShop';
 import { IWaveConfig, LevelModel } from '../Model/LevelModel';
 import { LevelManager } from './LevelMgr';
 import { PropSystem } from '../Prop/PropSystem';
+import { AliensGlobalInstance } from '../AliensGlobalInstance';
+import { GearGrids } from '../Gear/GearGrids';
+import { BattleTop } from '../UI/BattleTop';
+import { HomeTop } from '../UI/HomeTop';
+import { AliensAudioMgr } from './AliensAudioMgr';
 
 const { ccclass, property } = _decorator;
 
@@ -23,7 +28,9 @@ export class GameManager extends Component {
     public set isPaused(value: boolean) {
         this._isPaused = value;
     }
-    
+
+    @property(Prefab) glodPrefab: Prefab;
+    @property(Prefab) legPrefab: Prefab;
     @property(Prefab) bulletPrefab: Prefab;
     @property(Prefab) bowPrefab: Prefab;
     @property(Prefab) meleePrefab: Prefab;
@@ -57,6 +64,8 @@ export class GameManager extends Component {
     }
 
     initPools() {
+        NodePoolManager.instance.initPool('gold', this.glodPrefab, 20);
+        NodePoolManager.instance.initPool('leg', this.legPrefab, 20);
         NodePoolManager.instance.initPool('bullet', this.bulletPrefab, 20);
         NodePoolManager.instance.initPool('bow', this.bowPrefab, 20);
         NodePoolManager.instance.initPool(SoldierType.Melee, this.meleePrefab, 10);
@@ -79,22 +88,6 @@ export class GameManager extends Component {
 
     clearBattlefield() {
         SoldierSystem.instance.clearAllSoldiers();
-    }
-
-    /**
-     * 暂停游戏
-     */
-    public pauseGame() {
-        this._isPaused = true;
-        this.updateSoldiersPauseState();
-    }
-
-    /**
-     * 恢复游戏
-     */
-    public resumeGame() {
-        this._isPaused = false;
-        this.updateSoldiersPauseState();
     }
 
     /**
@@ -123,12 +116,20 @@ export class GameManager extends Component {
      * 开始游戏
      */
     public startGame() {
-        const bottomShop = this.bottomShop.getComponent(BottomShop) ;
+        const bottomShop = this.bottomShop.getComponent(BottomShop);
         if (bottomShop) {
             bottomShop.riseUp();
         }
         this.pauseGame();
         CastleManager.instance.setLevelCastleHp();
+    }
+
+    /**
+     * 开始敌人波次生成
+     */
+    public startEnemyWaves() {
+        this._isWaveRunning = true;
+        this.scheduleAllWaves(); 
     }
 
     /** 检测敌方剩余士兵*/
@@ -144,39 +145,78 @@ export class GameManager extends Component {
     }
 
     // 敌人波次相关属性和方法
-    private _totalWaves: number = 0; // 总波次数
-    private _waveTimer: number = 0;
+    private _totalWaves: number = 0;
+    private _currentWave: number = 0;
+    private _waveTimers: {timer: number, startTime: number, delay: number}[] = []; // 数组存储多个波次计时器
     private _isWaveRunning: boolean = false;
+    private _pausedTime: number = 0;
 
-    /**
-     * 开始敌人波次生成
-     */
-    public startEnemyWaves() {
-        this._isWaveRunning = true;
-        this.scheduleAllWaves();
+    // 暂停游戏
+    public pauseGame() {
+        this._isPaused = true;
+        this.updateSoldiersPauseState();
+        this._pausedTime = Date.now();
+        this._waveTimers.forEach(wave => {
+            if (wave.timer) {
+                clearTimeout(wave.timer);
+                wave.delay -= (this._pausedTime - wave.startTime); // 计算剩余延迟时间
+            }
+        });
     }
 
-    /**
-     * 调度所有波次敌人
-     */
+    // 恢复游戏
+    public resumeGame() {
+        this._isPaused = false;
+        this.updateSoldiersPauseState();
+        const now = Date.now();
+        
+        this._waveTimers.forEach(wave => {
+            if (wave.delay > 0) {
+                wave.startTime = now;
+                wave.timer = setTimeout(() => {
+                    const levelModel = LevelManager.instance.levelModel;
+                    const waveConfig = levelModel.getCurrentWaveConfig();
+                    const waveIndex = this._waveTimers.indexOf(wave);
+                    this.spawnWaveEnemies(waveConfig.waves[waveIndex]);
+                }, wave.delay);
+            }
+        });
+    }
+
+    // 调度所有波次敌人
     private scheduleAllWaves() {
         const levelModel = LevelManager.instance.levelModel;
         const waveConfig = levelModel.getCurrentWaveConfig();
         
-        // 清除之前的定时器
-        if (this._waveTimer) {
-            clearTimeout(this._waveTimer);
-        }
+        this.clearAllWaves();
+        this._waveTimers = []; // 清空计时器数组
 
         // 调度所有波次
         waveConfig.waves.forEach((wave, index) => {
-            this._waveTimer = setTimeout(() => {
+            const timer = setTimeout(() => {
                 this.spawnWaveEnemies(wave);
-                // console.log(`第${index + 1}波敌人已生成`);
+                this._currentWave++;
+                console.log(`Wave ${this._currentWave} started`);
             }, wave.delay * 1000);
+            
+            this._waveTimers.push({
+                timer: timer,
+                startTime: Date.now(),
+                delay: wave.delay * 1000
+            });
         });
 
         this._totalWaves = waveConfig.waves.length;
+    }
+
+    //清除所有定时器
+    public clearAllWaves() {
+        this._waveTimers.forEach(wave => {
+            if (wave.timer) {
+                clearTimeout(wave.timer);
+            }
+        });
+        this._waveTimers = [];
     }
 
     /**
@@ -208,13 +248,32 @@ export class GameManager extends Component {
     /**游戏结束*/
     public gameOver() {
         this.pauseGame(); 
+        this.clearAllWaves();
     }
 
-    //测试接口直接生成士兵
-    public testSpawnSoldier() {
-        const soldierTypes = [SoldierType.Melee, SoldierType.Super, SoldierType.Ranged];
-        const randomType = soldierTypes[0];
-        SoldierSystem.instance.spawnSoldier(randomType, Camp.Enemy);
-        SoldierSystem.instance.spawnSoldier(randomType, Camp.Player);
+    /**游戏重置*/
+    public resetGame() {
+        this.clearBattlefield();
+        LevelManager.instance.clearLevelData();
+
+        const grids = AliensGlobalInstance.instance.gameGrids;
+        grids.getComponent(GearGrids).clearAllGrid();
+
+        const battleTop = AliensGlobalInstance.instance.battleTop;
+        battleTop.getComponent(BattleTop).resetExp();
+    }
+
+    /**退出游戏*/
+    public exitGame() {
+        AliensAudioMgr.play(AliensAudioMgr.getMusicPathByName('bgm'), 1.0);
+        this.gameOver();
+        this.resetGame();
+
+        const battleUI = AliensGlobalInstance.instance.gameBattle;
+        const homeUI = AliensGlobalInstance.instance.homeUI;
+        const homeTop = AliensGlobalInstance.instance.homeTop;
+        battleUI.active = false;
+        homeUI.active = true;
+        homeTop.getComponent(HomeTop).updateGold();
     }
 }

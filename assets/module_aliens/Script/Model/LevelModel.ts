@@ -20,6 +20,17 @@ export interface IWaveConfig {
     }[];
 }
 
+/**关卡配置*/
+export interface ILevelConfig {
+    playerCastle: number; // 玩家城池血量
+    enemyCastle: number; // 敌方城池血量
+    enginePos: number[]; // 永动机的位置 
+    reward: {
+        gold: number; // 金币
+        loseGold: number; // 失败时获得金币 
+    }
+}
+
 export class LevelModel {
     public levelConfig: Tablelevels_config;
 
@@ -65,10 +76,5 @@ export class LevelModel {
         return WavesConfig.instance.getWaveConfig(this.level);
     }
 
-    /**
-     * 获取当前关卡的城池血量配置
-    */
-    public getCurrentCastleHpConfig(): {playerCastle: number, enemyCastle: number} {
-        return LevelConfig.instance.getLevelConfig(this.level);
-    }
+
 }

@@ -10,10 +10,9 @@ const { ccclass, property } = _decorator;
 @ccclass('Bow')
 export class Bow extends Component {
 
-    private target: Node = null;
+    private target:  BaseSoldier | Castle = null;
     private damage: number = 0;
     private speed: number = 200; // 每秒像素速度
-    private targetSoldier: BaseSoldier | Castle = null;
     ownerCamp: Camp = Camp.Enemy; // 子弹所属阵营
 
     private startPos: Vec3 = new Vec3();
@@ -23,26 +22,25 @@ export class Bow extends Component {
         private duration: number = 0;
     
         public init(target: BaseSoldier | Castle, damage: number) {
-            this.target = target.node;
-            this.targetSoldier = target;
+            this.target = target;
             this.damage = damage;
             
             // 初始化贝塞尔曲线参数
             this.startPos = this.node.worldPosition.clone();
-            this.totalDistance = Vec3.distance(this.startPos, this.target.worldPosition);
+            this.totalDistance = Vec3.distance(this.startPos, this.target.node.worldPosition);
             this.duration = this.totalDistance / this.speed;
             
             // 计算控制点（在起点和终点之间上方）
-            Vec3.lerp(this.controlPoint, this.startPos, this.target.worldPosition, 0.5);
+            Vec3.lerp(this.controlPoint, this.startPos, this.target.node.worldPosition, 0.5);
             this.controlPoint.y += 100; // 控制点高度
         }
     
         update(deltaTime: number) {
-            if (!this.target || !this.target.isValid) {
+            if (!this.target ||!this.target.node) {
                 this.node.destroy();
                 return;
             }
-    
+
             this.elapsedTime += deltaTime;
             const t = Math.min(this.elapsedTime / this.duration, 1);
     
@@ -50,7 +48,7 @@ export class Bow extends Component {
             const pos = new Vec3();
             Vec3.lerp(pos, this.startPos, this.controlPoint, t);
             const temp = new Vec3();
-            Vec3.lerp(temp, this.controlPoint, this.target.worldPosition, t);
+            Vec3.lerp(temp, this.controlPoint, this.target.node.worldPosition, t);
             Vec3.lerp(pos, pos, temp, t);
     
             // 平滑角度过渡
@@ -67,16 +65,23 @@ export class Bow extends Component {
         }
 
     private hitTarget() {
-        if (this.targetSoldier && this.targetSoldier.isValid) {
-            if (this.targetSoldier.camp !== this.ownerCamp) {
-                this.targetSoldier.takeDamage(this.damage);
+        if (this.target && this.target.node.isValid) {
+            if (this.target.camp !== this.ownerCamp) {
+                this.target.takeDamage(this.damage);
                 
                 // 显示血条
-                const bloodBar = NodePoolManager.instance.getNode('blood', this.targetSoldier.node);
+                const bloodBar = NodePoolManager.instance.getNode('blood', this.target.node);
                 if (bloodBar) {
                     const bloodScript = bloodBar.getComponent(BloodBar);
-                    if (bloodScript && bloodScript.showBloodBar) {
-                        bloodScript.showBloodBar(this.damage,this.target,this.targetSoldier.camp);
+
+                    if (bloodScript) {
+                        const target = this.target.getComponent(BaseSoldier)!;
+                        //如果是士兵类型
+                        if (target && target instanceof BaseSoldier) {
+                            bloodScript.showBloodProgress(target.stats.hp, target.stats.maxHp);
+                        }else{
+                            NodePoolManager.instance.putNode('blood',bloodBar);
+                        }
                     }
                 }
             }

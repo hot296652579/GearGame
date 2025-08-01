@@ -1,5 +1,6 @@
-import { Vec2, Node, v2, PolygonCollider2D, Rect, CircleCollider2D, Vec3, UITransform, Camera } from "cc";
+import { Vec2, Node, v2, PolygonCollider2D, Rect, CircleCollider2D, Vec3, UITransform, Camera, tween } from "cc";
 import { AliensGlobalInstance } from "./AliensGlobalInstance";
+import { NodePoolManager } from "./NodePoolManager";
 
 /** 游戏工具类 */
 export class GameUtil {
@@ -224,6 +225,35 @@ export class GameUtil {
     static getLastNumber(str: string): number | null {
         const match = str.match(/(\d+)$/);
         return match ? parseInt(match[1], 10) : null;
+    }
+
+    //奖励品飞向指定位置
+    static flyToPosition(from: Node, to: Node, count: number, type: string = 'gold') {
+        for (let i = 0; i < count; i++) {
+            // 在起点附近随机位置创建节点
+            const item = NodePoolManager.instance.getNode(type, from.parent);
+            const startPos = from.worldPosition.clone();
+            
+            // 添加随机偏移
+            const offsetX = (Math.random() - 0.5) * 100;
+            const offsetY = (Math.random() - 0.5) * 100;
+            startPos.x += offsetX;
+            startPos.y += offsetY;
+            item.worldPosition = startPos;
+
+            const duration = 0.5 + Math.random() * 0.5;
+            
+            tween(item)
+                .to(duration, { 
+                    worldPosition: to.worldPosition,
+                    scale: new Vec3(0.6, 0.6, 1) // 飞行过程中缩小
+                })
+                .call(() => {
+                    // 到达目标后回收节点
+                    NodePoolManager.instance.putNode(type, item);
+                })
+                .start();
+        }
     }
 
 }

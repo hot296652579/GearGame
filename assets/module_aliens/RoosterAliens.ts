@@ -23,7 +23,7 @@ export class RoosterAliens extends Component {
     homeBattle: Node = null; //主界面战斗UI
 
     onLoad() {
-        AliensAudioMgr.initilize();
+        AliensAudioMgr.play(AliensAudioMgr.getMusicPathByName('bgm'), 1.0);
         UserManager.instance.initilizeModel();
         LevelManager.instance.initilizeModel();
         AliensGlobalInstance.instance.initUI();
@@ -49,18 +49,10 @@ export class RoosterAliens extends Component {
     }
 
     registerListener() {
-        //UI监听
-        const btnSet = find('Canvas/TopLeft/BtnSet')!;
-        btnSet.on(NodeEventType.TOUCH_END, () => this.onClickSet(), this);
+
     }
 
-    private onClickSet(): void {
-        AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicIdName(2), 1.0);
-        const show = tgxUIMgr.inst.isShowing(UI_Setting);
-        if (!show) {
-            tgxUIMgr.inst.showUI(UI_Setting);
-        }
-    }
+
 
 }
 

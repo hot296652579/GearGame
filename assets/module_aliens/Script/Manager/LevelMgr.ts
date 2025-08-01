@@ -3,7 +3,8 @@ import { resLoader } from 'db://assets/core_tgx/base/ResLoader';
 import { EventDispatcher } from 'db://assets/core_tgx/easy_ui_framework/EventDispatcher';
 import { GlobalConfig } from '../../../start/Config/GlobalConfig';
 import { GameEvent } from '../Enum/GameEvent';
-import { LevelModel } from '../Model/LevelModel';
+import { ILevelConfig, LevelModel } from '../Model/LevelModel';
+import { LevelConfig } from '../LevelConfig';
 const { ccclass, property } = _decorator;
 
 @ccclass('LevelManager')
@@ -24,11 +25,6 @@ export class LevelManager {
 
     initilizeModel(): void {
         this.levelModel = new LevelModel();
-        this.registerEvent();
-    }
-
-    private registerEvent(): void {
-
     }
 
     /** 清除关卡数据*/
@@ -45,7 +41,7 @@ export class LevelManager {
     }
 
     /**
-     * 增加基础关卡腿数
+     * 增加关卡腿数
      * @param amount 增加数量
      */
     addLevelLegs(amount: number): void {
@@ -105,9 +101,35 @@ export class LevelManager {
     }
 
     /**
+     * 检查是否可以购买齿轮
+     * @returns 是否可以购买
+     */
+    public canAfford(legValue): boolean {
+        return LevelManager.instance.getLevelBaseLegs() >= legValue;
+    }
+    
+    /**
+     * 尝试扣除大腿价值
+     * @returns 是否扣除成功
+     */
+    public tryDeductLegs(legValue): boolean {
+        if (this.canAfford(legValue)) {
+            return LevelManager.instance.deductLevelBaseLegs(legValue);
+        }
+        return false;
+    }
+
+    /**
      * 获取当前关卡金币
      */
     getLevelGold(): number {
         return this._levelGetGold;
+    }
+
+    /**
+     * 获取当前关卡的配置
+    */
+    public getCurrentLevelConfig():ILevelConfig {
+        return LevelConfig.instance.getLevelConfig(this.levelModel.level);
     }
 }

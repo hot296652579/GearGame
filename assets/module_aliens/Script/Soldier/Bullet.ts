@@ -50,8 +50,10 @@ export class Bullet extends Component {
                 const bloodBar = NodePoolManager.instance.getNode('blood', this.targetSoldier.node);
                 if (bloodBar) {
                     const bloodScript = bloodBar.getComponent(BloodBar);
-                    if (bloodScript && bloodScript.showBloodBar) {
-                        bloodScript.showBloodBar(this.damage,this.target,this.targetSoldier.camp);
+
+                    if (bloodScript) {
+                        const targetSoldier = this.targetSoldier.getComponent(BaseSoldier)!;
+                        bloodScript.showBloodProgress(targetSoldier.stats.hp, targetSoldier.stats.maxHp);
                     }
                 }
             }

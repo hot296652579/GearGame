@@ -87,6 +87,19 @@ export class GearGrids extends Component {
         }
         return null;
     }
+
+    //清除所有格子子节点
+    clearAllGrid() {
+        this.node.children.forEach(grid => {
+            grid.children.forEach(child => {
+                if (child.name !== 'Selected') {
+                    child.destroy();
+                }
+            });
+        });
+
+        this.setEnginePos();
+    }
 }
 
 
