@@ -1,12 +1,12 @@
 import { _decorator, Color, Component, Label, Node } from 'cc';
-import { UserManager } from '../Manager/UserMgr';
+import { GlobalConfig } from 'db://assets/start/Config/GlobalConfig';
+import { AliensGlobalInstance } from '../AliensGlobalInstance';
+import { CastleManager } from '../Castle/CastleManager';
 import { SoldierType } from '../Enum/GameEnums';
+import { UserManager } from '../Manager/UserMgr';
 import { SoldierSystem } from '../Soldier/SoldierSystem';
 import { ArmItem } from './ArmItem';
-import { CastleManager } from '../Castle/CastleManager';
 import { HomeTop } from './HomeTop';
-import { AliensGlobalInstance } from '../AliensGlobalInstance';
-import { GlobalConfig } from 'db://assets/start/Config/GlobalConfig';
 const { ccclass, property } = _decorator;
 
 /**主界面兵种UI*/
@@ -72,11 +72,11 @@ export class HomeArm extends Component {
         this.castleCurHp.string = `${castleStats.castleHp}`;
         this.castleNextHp.string = `${castleStats.nextLevelHp}`;
         this.castleUpgradePrice.string = `${castleStats.upgradeCost}`;
-        
+
         // 根据金币是否足够设置价格颜色
         const canUpgrade = UserManager.instance.userModel.glod >= castleStats.upgradeCost;
         this.castleUpgradePrice.color = canUpgrade ? new Color(255, 255, 255) : new Color(255, 0, 0);
-        this.castleLv.string = `${castleLevel}`;
+        this.castleLv.string = `Lv.${castleLevel}`;
     }
 
     //显示兵种UI
@@ -84,7 +84,7 @@ export class HomeArm extends Component {
         // 定义兵种配置数组
         const soldierConfigs = [
             { type: SoldierType.Melee, node: this.armItem0 },
-            { type: SoldierType.Ranged, node: this.armItem1 }, 
+            { type: SoldierType.Ranged, node: this.armItem1 },
             { type: SoldierType.Super, node: this.armItem2 }
         ];
 
@@ -92,7 +92,7 @@ export class HomeArm extends Component {
         soldierConfigs.forEach(config => {
             const level = UserManager.instance.userModel.getSoldierLevel(config.type);
             const params = SoldierSystem.instance.getSoldierStats(config.type, level);
-            
+
             const item = config.node.getComponent(ArmItem);
             item.armType = config.type;
             item.updateArmStats(
@@ -109,7 +109,7 @@ export class HomeArm extends Component {
     onCastleUpgradeBtn() {
         const currentLevel = UserManager.instance.userModel.getCastleLevel();
         const stats = CastleManager.instance.getLevelCastleHpUpCost(currentLevel);
-        
+
         // 检查金币是否足够
         if (!UserManager.instance.deductGold(stats.upgradeCost)) {
             console.log('金币不足，无法升级基地');
@@ -119,7 +119,7 @@ export class HomeArm extends Component {
         // 升级基地
         const newLevel = currentLevel + 1;
         UserManager.instance.userModel.setCastleLevel(newLevel);
-        UserManager.instance.saveCastleLevel(newLevel); 
+        UserManager.instance.saveCastleLevel(newLevel);
 
         // 刷新UI显示
         this.showArmUI();

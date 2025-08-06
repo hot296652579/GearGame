@@ -142,8 +142,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 163.2568359375,
-      "height": 63
+      "width": 164.099609375,
+      "height": 37.8
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -178,13 +178,13 @@
       "b": 255,
       "a": 255
     },
-    "_string": "Soldier",
+    "_string": "Melee Soldier",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 50,
-    "_fontSize": 50,
+    "_actualFontSize": 26,
+    "_fontSize": 26,
     "_fontFamily": "Arial",
-    "_lineHeight": 50,
+    "_lineHeight": 30,
     "_overflow": 0,
     "_enableWrapText": false,
     "_font": {

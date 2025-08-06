@@ -1,4 +1,12 @@
-import { _decorator, Component, Node, sp } from 'cc';
+/*
+ * @Author: super_javan 296652579@qq.com
+ * @Date: 2025-08-06 21:48:36
+ * @LastEditors: super_javan 296652579@qq.com
+ * @LastEditTime: 2025-08-06 23:09:31
+ * @FilePath: /GearGame/assets/module_aliens/Script/GameConfig.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import { _decorator } from 'cc';
 import { GearType, PropType, SoldierType } from './Enum/GameEnums';
 const { ccclass, property } = _decorator;
 
@@ -17,34 +25,34 @@ export class GameConfig {
             attack: 5,
             hp: 10,
             upgradeCost: 220,
-            name: '龙骑士',
+            name: 'Melee Soldier',
             deadGold: 1,
-            deadExp:3,
-            deadLeg:1,
-            speed:80,
-            attackRange:110
+            deadExp: 3,
+            deadLeg: 1,
+            speed: 80,
+            attackRange: 110
         },
         [SoldierType.Super]: { // 超级兵
             attack: 10,
             hp: 18,
             upgradeCost: 2200,
-            name: '超级兵',
+            name: 'Super Soldier',
             deadGold: 6,
-            deadExp:8,
-            deadLeg:5,
-            speed:60,
-            attackRange:120
+            deadExp: 8,
+            deadLeg: 5,
+            speed: 60,
+            attackRange: 120
         },
         [SoldierType.Ranged]: { // 远程(弓箭手)
             attack: 8,
             hp: 3,
             upgradeCost: 280,
-            name: '弓箭手',
+            name: 'Monk',
             deadGold: 3,
-            deadExp:5,
-            deadLeg:3,
-            speed:100,
-            attackRange:200
+            deadExp: 5,
+            deadLeg: 3,
+            speed: 100,
+            attackRange: 200
         }
     };
 
@@ -53,10 +61,10 @@ export class GameConfig {
         [SoldierType.Melee]: 10, // 近战(龙骑士)
         [SoldierType.Super]: 15, // 超级兵
         [SoldierType.Ranged]: 12, // 远程(弓箭手)
-        [PropType.Freeze]:15, // 冻结
-        [PropType.Heal]:15, // 治疗
-        [PropType.Coin]:15, // 金币
-        [GearType.SpeedUp]:10 //1级别
+        [PropType.Freeze]: 15, // 冻结
+        [PropType.Heal]: 15, // 治疗
+        [PropType.Coin]: 15, // 金币
+        [GearType.SpeedUp]: 10 //1级别
     };
 
     /**

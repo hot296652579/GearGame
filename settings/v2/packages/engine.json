@@ -110,7 +110,7 @@
         "_value": false
       },
       "spine": {
-        "_value": false
+        "_value": true
       },
       "dragon-bones": {
         "_value": true
@@ -151,6 +151,7 @@
       "procedural-animation",
       "profiler",
       "skeletal-animation",
+      "spine",
       "tween",
       "ui",
       "websocket"
