@@ -33,40 +33,40 @@ export class GearComponent extends Component implements IGearBase {
     private _accumulatedGrowth: number = 0; // 累积的增长值
 
     @property(SpriteFrame)
-    soldierFrames: SpriteFrame[] = []; 
+    soldierFrames: SpriteFrame[] = [];
 
     @property(SpriteFrame)
-    propFrames: SpriteFrame[] = []; 
+    propFrames: SpriteFrame[] = [];
 
     @property(Sprite)
-    spGear:Sprite = null!; 
+    spGear: Sprite = null!;
 
     @property(Node)
-    used:Node = null!; //消耗节点
+    used: Node = null!; //消耗节点
 
     @property(Node)
-    mask:Node = null!; //遮罩
+    mask: Node = null!; //遮罩
 
     @property(Label)
-    lbGear:Label = null!;
+    lbGear: Label = null!;
 
     @property(Label)
-    lbLegs:Label = null!;
+    lbLegs: Label = null!;
 
     /**
      * 根据ID初始化齿轮数据
      */
     initWithId(gearId: string) {
         this.id = gearId;
-        
+
         // 根据ID前缀判断类型
         if (gearId.startsWith('Soldier')) {
             this.type = GearType.Soldier;
             const parts = gearId.split('_');
             const soldierType = parts[1] as SoldierType;
-            
+
             // 设置兵种显示文本
-            switch(soldierType) {
+            switch (soldierType) {
                 case SoldierType.Melee:
                     this.spGear.spriteFrame = this.soldierFrames[0];
                     break;
@@ -77,7 +77,7 @@ export class GearComponent extends Component implements IGearBase {
                     this.spGear.spriteFrame = this.soldierFrames[1];
                     break;
             }
-            
+
             this.legValue = GameConfig.GearLegValue[soldierType] || 999;
 
             this.baseGrowthRate = 0.2;
@@ -86,12 +86,12 @@ export class GearComponent extends Component implements IGearBase {
             this.type = GearType.Prop;
             const parts = gearId.split('_');
             const propType = parts[1] as PropType;
-            
+
             this.legValue = GameConfig.GearLegValue[propType] || 999;
             this.baseGrowthRate = 0.3;
             this._propType = propType;
 
-            switch(propType) {
+            switch (propType) {
                 case PropType.Coin:
                     this.spGear.spriteFrame = this.propFrames[0];
                     break;
@@ -130,7 +130,7 @@ export class GearComponent extends Component implements IGearBase {
 
     /**显示冷却效果*/
     showCoolDownEffect() {
-        if(this.mask) {
+        if (this.mask) {
             // 计算冷却进度 (0-1)
             const progress = this._accumulatedGrowth % 1;
             // 根据进度设置mask高度 (0-80)
@@ -143,7 +143,7 @@ export class GearComponent extends Component implements IGearBase {
     private defaultStyle() {
         this.hideRateText();
         this.used.active = true;
-        if(this.mask) {
+        if (this.mask) {
             this.mask.active = false;
             this.mask.getComponent(UITransform)!.height = 80; // 重置为最大高度
         }
@@ -153,9 +153,9 @@ export class GearComponent extends Component implements IGearBase {
     gridStyle() {
         this.showRateText();
         this.used.active = false;
-        if(this.mask) {
+        if (this.mask) {
             this.mask.active = true;
-            this.mask.getComponent(UITransform)!.height = 80; 
+            this.mask.getComponent(UITransform)!.height = 80;
         }
     }
 
@@ -211,12 +211,12 @@ export class GearComponent extends Component implements IGearBase {
 
         this._accumulatedGrowth += this.finalGrowthRate;
         this.showCoolDownEffect();
-        
+
         // 当累积值大于1时触发创建
         if (this._accumulatedGrowth >= 1) {
             const count = Math.floor(this._accumulatedGrowth);
             this._accumulatedGrowth -= count;
-            
+
             for (let i = 0; i < count; i++) {
                 if (this.type === GearType.Soldier) {
                     SoldierSystem.instance.spawnSoldier(this._soldierType, Camp.Player);
@@ -235,15 +235,15 @@ export class GearComponent extends Component implements IGearBase {
         }
         // 升级当前齿轮
         this.level = this.level * 2;
-        
+
         // 根据齿轮类型更新属性
-        switch(this.type) {
+        switch (this.type) {
             case GearType.SpeedUp:
                 this.growth = GearSystem.instance.rateByLevel(this.level);
                 this.sellPrice = 100 + (this.level - 1) * 25;
                 this.lbGear.string = `${this.level}`;
                 break;
-                
+
             case GearType.Soldier:
             case GearType.Prop:
                 this.baseGrowthRate += 0.1;

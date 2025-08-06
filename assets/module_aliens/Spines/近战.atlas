@@ -1,0 +1,69 @@
+
+近战.png
+size: 345,263
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: true
+  xy: 227, 13
+  size: 111, 105
+  orig: 113, 107
+  offset: 1, 1
+  index: -1
+foot_l
+  rotate: true
+  xy: 96, 9
+  size: 48, 41
+  orig: 50, 44
+  offset: 1, 1
+  index: -1
+foot_r
+  rotate: true
+  xy: 173, 75
+  size: 43, 42
+  orig: 46, 45
+  offset: 1, 1
+  index: -1
+hand_l
+  rotate: false
+  xy: 45, 4
+  size: 49, 53
+  orig: 51, 56
+  offset: 1, 2
+  index: -1
+hand_r
+  rotate: true
+  xy: 139, 11
+  size: 46, 86
+  orig: 48, 88
+  offset: 1, 1
+  index: -1
+head
+  rotate: true
+  xy: 2, 59
+  size: 202, 169
+  orig: 204, 171
+  offset: 1, 1
+  index: -1
+jian
+  rotate: true
+  xy: 214, 126
+  size: 135, 129
+  orig: 137, 131
+  offset: 1, 1
+  index: -1
+shouzhang
+  rotate: false
+  xy: 2, 2
+  size: 41, 55
+  orig: 43, 57
+  offset: 1, 1
+  index: -1
+yingzi
+  rotate: true
+  xy: 173, 120
+  size: 141, 39
+  orig: 143, 41
+  offset: 1, 1
+  index: -1

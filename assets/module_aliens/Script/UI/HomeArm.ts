@@ -74,9 +74,8 @@ export class HomeArm extends Component {
         this.castleUpgradePrice.string = `${castleStats.upgradeCost}`;
         
         // 根据金币是否足够设置价格颜色
-
         const canUpgrade = UserManager.instance.userModel.glod >= castleStats.upgradeCost;
-        this.castleUpgradePrice.color = canUpgrade ? new Color(0, 0, 0) : new Color(255, 0, 0);
+        this.castleUpgradePrice.color = canUpgrade ? new Color(255, 255, 255) : new Color(255, 0, 0);
         this.castleLv.string = `${castleLevel}`;
     }
 

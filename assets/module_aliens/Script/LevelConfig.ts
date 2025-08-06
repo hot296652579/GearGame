@@ -25,11 +25,11 @@ export class LevelConfig {
 
     // 关卡相关配置
     private levelConfig = {
-        1:{
-            enginePos:[1,2],            //永动机的位置
-            reward:{
-                gold:1100,              //金币
-                loseGold:110,           //失败时获得金币
+        1: {
+            enginePos: [1, 2],            //永动机的位置
+            reward: {
+                gold: 1100,              //金币
+                loseGold: 110,           //失败时获得金币
             }
         }
     }

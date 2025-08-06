@@ -65,7 +65,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sprite",
+    "_name": "Spine",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -87,7 +87,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": -50,
       "z": 0
     },
     "_lrot": {
@@ -99,8 +99,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0.4,
+      "y": 0.4,
       "z": 1
     },
     "_mobility": 0,
@@ -127,13 +127,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 151,
-      "height": 131
+      "width": 258.4700012207031,
+      "height": 298.30999755859375
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
+      "x": 0.5726776940201628,
+      "y": 0.0264825187222085
     },
     "_id": ""
   },
@@ -142,7 +142,7 @@
     "fileId": "5dEgNr8U1HOocSDBTdeG6m"
   },
   {
-    "__type__": "cc.Sprite",
+    "__type__": "sp.Skeleton",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -163,28 +163,28 @@
       "b": 255,
       "a": 255
     },
-    "_spriteFrame": {
-      "__uuid__": "79e8e6a7-2215-4643-8558-f6cd74a580cf@f9941",
-      "__expectedType__": "cc.SpriteFrame"
+    "_skeletonData": {
+      "__uuid__": "dfc874de-e2bf-4c56-8189-84a504fe618e",
+      "__expectedType__": "sp.SkeletonData"
     },
-    "_type": 0,
-    "_fillType": 0,
-    "_sizeMode": 1,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_fillStart": 0,
-    "_fillRange": 0,
-    "_isTrimmedMode": true,
-    "_useGrayscale": false,
-    "_atlas": null,
+    "defaultSkin": "default",
+    "defaultAnimation": "walk",
+    "_premultipliedAlpha": false,
+    "_timeScale": 1,
+    "_preCacheMode": 0,
+    "_cacheMode": 0,
+    "_sockets": [],
+    "_useTint": false,
+    "_debugMesh": false,
+    "_debugBones": false,
+    "_debugSlots": false,
+    "_enableBatch": false,
+    "loop": false,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "a2Nnj1+mZBCaekchfxpHQI"
+    "fileId": "3e9ZO6OPRDZ6qb7LxArzq8"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -238,6 +238,9 @@
     "_enabled": true,
     "__prefab": {
       "__id__": 11
+    },
+    "skeleton": {
+      "__id__": 5
     },
     "_id": ""
   },

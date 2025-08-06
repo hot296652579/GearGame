@@ -88,7 +88,7 @@ export class ArmItem extends Component {
      */
     private updatePriceColor(canUpgrade: boolean) {
         if (this.armUpgradePrice) {
-            this.armUpgradePrice.color = canUpgrade ? new Color(0, 0, 0) : new Color(255, 0, 0);
+            this.armUpgradePrice.color = canUpgrade ? new Color(255, 255, 255) : new Color(255, 0, 0);
         }
     }
 
@@ -104,6 +104,7 @@ export class ArmItem extends Component {
     updateArmStats(name: string, attack: number, attackUp: number, hp: number, hpUp: number, upgradeCost: number) {
         this.armName.string = name;
         this.armAtk.string = `${attack.toFixed(2)}`;
+        // this.armAtk.string = '199.33';
         this.armAtkUp.string = `+${attackUp.toFixed(2)}`;
         this.armCurHp.string = `${hp.toFixed(2)}`;
         this.armHpUp.string = `+${hpUp.toFixed(2)}`;

@@ -12,7 +12,7 @@ const { ccclass, property } = _decorator;
 export class BattleTop extends Component {
 
     @property(Node)
-    btPause: Node = null; 
+    btPause: Node = null;
 
     @property(Label)
     lbLegs: Label = null;
@@ -61,13 +61,13 @@ export class BattleTop extends Component {
     // 增加经验
     public addExp(amount: number) {
         this._currentExp += amount;
-        
+        console.log("增加经验值: " + amount);
         // 检查是否升级
-        if (this._currentLevel <= this._expThresholds.length && 
+        if (this._currentLevel <= this._expThresholds.length &&
             this._currentExp >= this._expThresholds[this._currentLevel - 1]) {
             this.levelUp();
         }
-        
+
         this.updateExpDisplay();
     }
 
@@ -77,14 +77,14 @@ export class BattleTop extends Component {
         this.bottomShop.getComponent(BottomShop).riseUp();
         this._currentLevel++;
         this._currentExp = 0;
-        
+
         this.updateExpDisplay();
     }
 
     // 更新经验显示
     private updateExpDisplay() {
         this.lbLevelExp.string = `${this._currentLevel}`;
-        
+
         // 计算进度条百分比
         if (this._currentLevel <= this._expThresholds.length) {
             const threshold = this._expThresholds[this._currentLevel - 1];

@@ -36,28 +36,28 @@ export class WavesConfig {
     // 关卡波次配置
     private _waveConfigs: Record<number, IWaveConfig> = {
         1: {
-            exp:[6,11,18,25],
+            exp: [6, 11, 18, 25],
             waves: [
                 {
                     delay: 5,
                     enemies: [
-                        {type: SoldierType.Melee, count: 1, level: 1},
+                        { type: SoldierType.Melee, count: 1, level: 1 },
                         // {type: SoldierType.Ranged, count: 1, level: 1}
                     ]
                 },
                 {
                     delay: 10,
                     enemies: [
-                        {type: SoldierType.Melee, count: 2, level: 1},
+                        { type: SoldierType.Melee, count: 1, level: 1 },
                         // {type: SoldierType.Ranged, count: 1, level: 1}
                     ]
                 },
                 {
                     delay: 15,
                     enemies: [
-                        {type: SoldierType.Melee, count: 1, level: 1},
-                        {type: SoldierType.Ranged, count: 1, level: 1},
-                        {type: SoldierType.Super, count: 1, level: 1},
+                        { type: SoldierType.Melee, count: 1, level: 1 },
+                        { type: SoldierType.Super, count: 1, level: 1 },
+                        { type: SoldierType.Ranged, count: 1, level: 1 },
                     ]
                 }
             ]
