@@ -1,12 +1,14 @@
-import { _decorator, Component, ERaycast2DType, EventTouch, find, Label, Node, NodeEventType, PhysicsSystem2D, Toggle, ToggleContainer, Tween, tween, v2, v3, Vec2, Vec3 } from 'cc';
-import { GameEvent } from './Script/Enum/GameEvent';
-import { LevelManager } from './Script/Manager/LevelMgr';
-import { GameUtil } from './Script/GameUtil';
-import { AliensAudioMgr } from './Script/Manager/AliensAudioMgr';
+/*
+ * @Author: super_javan 296652579@qq.com
+ * @Date: 2025-08-06 21:48:36
+ * @LastEditors: super_javan 296652579@qq.com
+ * @LastEditTime: 2025-08-06 22:31:28
+ * @FilePath: /GearGame/assets/module_aliens/RoosterAliens.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import { _decorator, Component, Node, Toggle, ToggleContainer } from 'cc';
 import { AliensGlobalInstance } from './Script/AliensGlobalInstance';
-import { UI_PowerUp, UI_Setting } from '../scripts/UIDef';
-import { tgxUIMgr } from '../core_tgx/tgx';
-import { EventDispatcher } from '../core_tgx/easy_ui_framework/EventDispatcher';
+import { LevelManager } from './Script/Manager/LevelMgr';
 import { UserManager } from './Script/Manager/UserMgr';
 const { ccclass, property } = _decorator;
 
@@ -23,20 +25,20 @@ export class RoosterAliens extends Component {
     homeBattle: Node = null; //主界面战斗UI
 
     onLoad() {
-        AliensAudioMgr.play(AliensAudioMgr.getMusicPathByName('bgm'), 1.0);
+        // AliensAudioMgr.play(AliensAudioMgr.getMusicPathByName('bgm'), 1.0);
         UserManager.instance.initilizeModel();
         LevelManager.instance.initilizeModel();
         AliensGlobalInstance.instance.initUI();
         this.registerListener();
         this.resetMgr();
-        
+
         // 默认显示战斗UI
         AliensGlobalInstance.instance.homeBattle.active = true;
         AliensGlobalInstance.instance.homeArm.active = false;
         AliensGlobalInstance.instance.gameBattle.active = false;
     }
 
-    onToggleContainerClick (toggle: Toggle) {
+    onToggleContainerClick(toggle: Toggle) {
         this.homeBattle.active = (toggle.node.name === 'ToggleBattle');
         this.homeArm.active = (toggle.node.name === 'ToggleArm');
     }

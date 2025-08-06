@@ -1,10 +1,9 @@
-import { Node, Prefab, _decorator, assetManager, find, instantiate, sys } from 'cc';
-import { resLoader } from 'db://assets/core_tgx/base/ResLoader';
+import { Node, _decorator } from 'cc';
 import { EventDispatcher } from 'db://assets/core_tgx/easy_ui_framework/EventDispatcher';
-import { GlobalConfig } from '../../../start/Config/GlobalConfig';
 import { GameEvent } from '../Enum/GameEvent';
-import { ILevelConfig, LevelModel } from '../Model/LevelModel';
 import { LevelConfig } from '../LevelConfig';
+import { ILevelConfig, LevelModel } from '../Model/LevelModel';
+import { PropSystem } from '../Prop/PropSystem';
 const { ccclass, property } = _decorator;
 
 @ccclass('LevelManager')
@@ -33,6 +32,7 @@ export class LevelManager {
         this._levelLegs = 25;
         this._levelLegsAdd = 10;
         this.levelModel.clearLevel();
+        PropSystem.instance.clearRecord();
     }
 
     upgradeLevel(up: number = 1): void {
@@ -107,7 +107,7 @@ export class LevelManager {
     public canAfford(legValue): boolean {
         return LevelManager.instance.getLevelBaseLegs() >= legValue;
     }
-    
+
     /**
      * 尝试扣除大腿价值
      * @returns 是否扣除成功
@@ -129,7 +129,7 @@ export class LevelManager {
     /**
      * 获取当前关卡的配置
     */
-    public getCurrentLevelConfig():ILevelConfig {
+    public getCurrentLevelConfig(): ILevelConfig {
         return LevelConfig.instance.getLevelConfig(this.levelModel.level);
     }
 }

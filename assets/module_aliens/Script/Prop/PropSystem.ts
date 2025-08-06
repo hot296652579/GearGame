@@ -1,10 +1,11 @@
-import { _decorator, Component, Node, tween, UITransform, Vec3 } from 'cc';
+import { _decorator, UITransform } from 'cc';
 import { PropType } from '../Enum/GameEnums';
-import { SoldierSystem } from '../Soldier/SoldierSystem';
-import { BaseSoldier } from '../Soldier/SoldierBase';
-import { Camp } from '../Soldier/ISoldierStats';
-import { NodePoolManager } from '../NodePoolManager';
 import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
+import { GameManager } from '../Manager/GameManager';
+import { NodePoolManager } from '../NodePoolManager';
+import { Camp } from '../Soldier/ISoldierStats';
+import { BaseSoldier } from '../Soldier/SoldierBase';
+import { SoldierSystem } from '../Soldier/SoldierSystem';
 
 const { ccclass, property } = _decorator;
 
@@ -24,7 +25,7 @@ export class PropSystem {
 
     //生成道具
     async takeProp(type: PropType) {
-        switch(type) {
+        switch (type) {
             case PropType.Freeze:
                 this.freezeProp();
                 break;
@@ -42,29 +43,29 @@ export class PropSystem {
         console.log('冰冻士兵');
         AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('ice'), 1.0);
         const enemies = SoldierSystem.instance.getEnemySoldiers(Camp.Player);
-        
+
         enemies.forEach(soldier => {
             // 如果士兵已被冰冻，刷新持续时间
             if (this.frozenSoldiers.has(soldier)) {
                 this.frozenSoldiers.set(soldier, Date.now() + this.FREEZE_DURATION * 1000);
                 return;
             }
-            
+
             // 冰冻士兵
             soldier.setPaused(true);
             this.frozenSoldiers.set(soldier, Date.now() + this.FREEZE_DURATION * 1000);
-            
+
             // 添加冰冻特效
             const freezeEffect = NodePoolManager.instance.getNode('freeze_effect', soldier.node);
             if (freezeEffect) {
                 const transform = soldier.node.getComponent(UITransform);
                 freezeEffect.setPosition(
-                    Math.random() * transform.width - transform.width/2,
-                    Math.random() * transform.height - transform.height/2,
+                    Math.random() * transform.width - transform.width / 2,
+                    Math.random() * transform.height - transform.height / 2,
                     0
                 );
                 soldier.node.addChild(freezeEffect);
-                
+
                 // 记录特效节点，解冻时销毁
                 soldier['_freezeEffect'] = freezeEffect;
             }
@@ -72,18 +73,19 @@ export class PropSystem {
     }
 
     update(dt: number) {
+        if (GameManager.instance.isPaused) return;
         // 清理已解冻的士兵
         const currentTime = Date.now();
         for (const [soldier, unfreezeTime] of this.frozenSoldiers) {
             if (currentTime >= unfreezeTime) {
                 soldier.setPaused(false);
-                
+
                 // 销毁冰冻特效
                 if (soldier['_freezeEffect']) {
                     NodePoolManager.instance.putNode('freeze_effect', soldier['_freezeEffect']);
                     delete soldier['_freezeEffect'];
                 }
-                
+
                 this.frozenSoldiers.delete(soldier);
             }
         }
@@ -97,7 +99,7 @@ export class PropSystem {
             // 恢复50%血量
             const healAmount = Math.ceil(soldier.stats.hp * 0.5);
             soldier.stats.hp = Math.min(soldier.stats.hp + healAmount, soldier.stats.hp * 2);
-            
+
             // 显示治疗效果
             const healEffect = NodePoolManager.instance.getNode('heal_effect', soldier.node);
             if (healEffect) {
@@ -112,6 +114,11 @@ export class PropSystem {
     //金币道具
     coinProp() {
         //TODO: 实现金币道具效果
+    }
+
+    //清除
+    clearRecord() {
+        this.frozenSoldiers.clear();
     }
 }
 
