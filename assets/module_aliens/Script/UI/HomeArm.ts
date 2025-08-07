@@ -1,4 +1,4 @@
-import { _decorator, Color, Component, Label, Node } from 'cc';
+import { _decorator, Color, Component, Label, Node, Sprite, SpriteFrame } from 'cc';
 import { GlobalConfig } from 'db://assets/start/Config/GlobalConfig';
 import { AliensGlobalInstance } from '../AliensGlobalInstance';
 import { CastleManager } from '../Castle/CastleManager';
@@ -12,6 +12,14 @@ const { ccclass, property } = _decorator;
 /**主界面兵种UI*/
 @ccclass('HomeArm')
 export class HomeArm extends Component {
+
+    //基地节点
+    @property(Sprite)
+    castleSprite: Sprite = null;
+
+    //基地图集
+    @property(SpriteFrame)
+    castleFrames: SpriteFrame[] = [];
 
     //基地血量
     @property(Label)
@@ -77,6 +85,13 @@ export class HomeArm extends Component {
         const canUpgrade = UserManager.instance.userModel.glod >= castleStats.upgradeCost;
         this.castleUpgradePrice.color = canUpgrade ? new Color(255, 255, 255) : new Color(255, 0, 0);
         this.castleLv.string = `Lv.${castleLevel}`;
+
+        if (castleLevel >= 3 && castleLevel < 7) {
+            this.castleSprite.spriteFrame = this.castleFrames[1];  
+        }
+        else if (castleLevel >= 7) {
+            this.castleSprite.spriteFrame = this.castleFrames[2];
+        }
     }
 
     //显示兵种UI

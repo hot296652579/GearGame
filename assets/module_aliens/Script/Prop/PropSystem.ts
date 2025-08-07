@@ -19,7 +19,7 @@ export class PropSystem {
     }
 
     // 冰冻效果持续时间(秒)
-    private FREEZE_DURATION = 1;
+    private FREEZE_DURATION = 2;
     // 记录被冰冻的士兵及其解冻时间
     private frozenSoldiers: Map<BaseSoldier, number> = new Map();
 
@@ -40,7 +40,7 @@ export class PropSystem {
 
     //冰冻道具
     freezeProp() {
-        console.log('冰冻士兵');
+        // console.log('冰冻士兵');
         AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('ice'), 1.0);
         const enemies = SoldierSystem.instance.getEnemySoldiers(Camp.Player);
 
@@ -58,12 +58,7 @@ export class PropSystem {
             // 添加冰冻特效
             const freezeEffect = NodePoolManager.instance.getNode('freeze_effect', soldier.node);
             if (freezeEffect) {
-                const transform = soldier.node.getComponent(UITransform);
-                freezeEffect.setPosition(
-                    Math.random() * transform.width - transform.width / 2,
-                    Math.random() * transform.height - transform.height / 2,
-                    0
-                );
+                freezeEffect.setPosition(0, 0, 0);
                 soldier.node.addChild(freezeEffect);
 
                 // 记录特效节点，解冻时销毁

@@ -23,8 +23,10 @@ export class HomeTop extends Component {
         //UI监听
         const btnSet = find('Canvas/TopLeft/BtnSet')!;
         const btnUserGold = find('Canvas/TopLeft/UserGold')!;
+        const btnAdd = find('Canvas/TopLeft/UserGold/BtAdd')!;
         btnSet.on(NodeEventType.TOUCH_END, () => this.onClickSet(), this);
         btnUserGold.on(NodeEventType.TOUCH_END, () => this.onClickUserGold(), this);
+        btnAdd.on(NodeEventType.TOUCH_END, () => this.onClickUserGold(), this);
     }
 
     private onClickSet(): void {

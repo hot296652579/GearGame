@@ -46,23 +46,27 @@ export class UI_BattleResult_Impl extends UI_BattleResult {
         layout.loseNode.active = !this.win;
 
         this.updateRewardBase();
+        if (this.win) {
+            LevelManager.instance.upgradeLevel();
+        }
     }
 
     private updateRewardBase(): void {
-        const {reward} = LevelManager.instance.getCurrentLevelConfig();
+        const { reward } = LevelManager.instance.getCurrentLevelConfig();
         let layout = this.layout as Layout_BattleResult;
 
         this.rewardBase = reward.gold;
         this.loseGold = reward.loseGold;
-        this.rewardBase = this.win? this.rewardBase : this.loseGold;
+        this.rewardBase = this.win ? this.rewardBase : this.loseGold;
         layout.lbGold.string = `x${this.rewardBase}`;
     }
 
-    onClickReward(rate:number = 1): void {
+    onClickReward(rate: number = 1): void {
         AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('dianji'), 1.0);
-        this.rewardBase = rate == 1? this.rewardBase : this.rewardBase * 2;
+        this.rewardBase = rate == 1 ? this.rewardBase : this.rewardBase * 2;
         UserManager.instance.addGold(this.rewardBase);
         GameManager.instance.exitGame();
+
         this.destoryMyself();
     }
 

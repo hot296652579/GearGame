@@ -141,7 +141,6 @@ export class BottomShop extends Component {
     private onTouchEndAddLegs(event: EventTouch) {
         const levelLegsAdd = LevelManager.instance.getLevelLegsAdd();
         LevelManager.instance.addLevelLegs(levelLegsAdd);
-        LevelManager.instance.upgradeLevel();
         this.updateBattleTopLegs();
         this.updateBottomShopGearPrices();
         this.addLegEffect(); 

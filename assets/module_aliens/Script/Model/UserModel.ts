@@ -19,7 +19,7 @@ export class UserModel {
 
     setSoldierLevel(type: SoldierType, level: number): void {
         this.soldierLevels[type] = level;
-        console.log(`设置兵种 ${type} 等级为 ${level}`);
+        // console.log(`设置兵种 ${type} 等级为 ${level}`);
     }
 
     getCastleLevel(): number {

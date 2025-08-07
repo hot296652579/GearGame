@@ -266,8 +266,8 @@ export class GearSystem {
             gears.push(
                 { type: GearType.SpeedUp, level: 1 },
                 { type: GearType.SpeedUp, level: 1 },
-                { type: GearType.Prop, subType: PropType.Freeze, level: 1 }
-                // { type: GearType.Soldier, subType: SoldierType.Melee, level: 1 }
+                // { type: GearType.Prop, subType: PropType.Freeze, level: 1 }
+                { type: GearType.Soldier, subType: SoldierType.Melee, level: 1 }
             );
             return gears;
         }

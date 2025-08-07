@@ -1,9 +1,11 @@
-import { Node, _decorator } from 'cc';
+import { Node, _decorator, sys } from 'cc';
 import { EventDispatcher } from 'db://assets/core_tgx/easy_ui_framework/EventDispatcher';
 import { GameEvent } from '../Enum/GameEvent';
 import { LevelConfig } from '../LevelConfig';
 import { ILevelConfig, LevelModel } from '../Model/LevelModel';
 import { PropSystem } from '../Prop/PropSystem';
+import { GlobalConfig } from 'db://assets/start/Config/GlobalConfig';
+import { UserManager } from './UserMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('LevelManager')
@@ -15,8 +17,6 @@ export class LevelManager {
     }
 
     public levelModel: LevelModel = null;
-    currentLevel: Node = null!;
-    randomLevel: number = 0;
     private _levelLegs: number = 25;//关卡大腿数
     //关卡大腿增加数
     private _levelLegsAdd: number = 10;
@@ -24,6 +24,15 @@ export class LevelManager {
 
     initilizeModel(): void {
         this.levelModel = new LevelModel();
+        this.loadGameLvFromLocalStorage();
+    }
+
+    loadGameLvFromLocalStorage(): void {
+        // 加载关卡
+        const level = UserManager.instance.getCurrentGameLevel();
+        if (level) {
+            this.levelModel.gameLevel = level;
+        }
     }
 
     /** 清除关卡数据*/
@@ -36,8 +45,11 @@ export class LevelManager {
     }
 
     upgradeLevel(up: number = 1): void {
-        this.levelModel.level += up;
-        EventDispatcher.instance.emit(GameEvent.EVENT_BATTLE_SUCCESS_LEVEL_UP);
+        this.levelModel.gameLevel += up;
+        if (this.levelModel.gameLevel >= GlobalConfig.levelTotal) {
+            this.levelModel.gameLevel = GlobalConfig.levelTotal;
+        }
+        UserManager.instance.saveLevel(this.levelModel.gameLevel);
     }
 
     /**
@@ -130,6 +142,6 @@ export class LevelManager {
      * 获取当前关卡的配置
     */
     public getCurrentLevelConfig(): ILevelConfig {
-        return LevelConfig.instance.getLevelConfig(this.levelModel.level);
+        return LevelConfig.instance.getLevelConfig(this.levelModel.gameLevel);
     }
 }

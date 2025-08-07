@@ -40,7 +40,7 @@ export class SoldierSystem {
         if(camp === Camp.Player) {
             soldierLv = UserManager.instance.userModel.getSoldierLevel(type);
         }else{
-            soldierLv = LevelManager.instance.levelModel.level;
+            soldierLv = LevelManager.instance.levelModel.gameLevel;
         }
 
         const soldierState = SoldierSystem.instance.getSoldierStats(type, soldierLv);

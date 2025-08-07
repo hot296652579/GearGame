@@ -121,7 +121,7 @@ export class GameManager extends Component {
             bottomShop.riseUp();
         }
         this.pauseGame();
-        CastleManager.instance.setLevelCastleHp();
+        CastleManager.instance.initLevelCastleHp();
     }
 
     /**
@@ -129,25 +129,25 @@ export class GameManager extends Component {
      */
     public startEnemyWaves() {
         this._isWaveRunning = true;
-        this.scheduleAllWaves(); 
+        this.scheduleAllWaves();
     }
 
     /** 检测敌方剩余士兵*/
     public checkEnemySoldiers() {
-       const zero = SoldierSystem.instance.checkEnemySoldiers(); 
-       if(zero) {
+        const zero = SoldierSystem.instance.checkEnemySoldiers();
+        if (zero) {
             this.pauseGame();
             const bottomShop = this.bottomShop.getComponent(BottomShop);
             if (bottomShop) {
                 bottomShop.riseUp();
-            } 
-       }
+            }
+        }
     }
 
     // 敌人波次相关属性和方法
     private _totalWaves: number = 0;
     private _currentWave: number = 0;
-    private _waveTimers: {timer: number, startTime: number, delay: number}[] = []; // 数组存储多个波次计时器
+    private _waveTimers: { timer: number, startTime: number, delay: number }[] = []; // 数组存储多个波次计时器
     private _isWaveRunning: boolean = false;
     private _pausedTime: number = 0;
 
@@ -169,7 +169,7 @@ export class GameManager extends Component {
         this._isPaused = false;
         this.updateSoldiersPauseState();
         const now = Date.now();
-        
+
         this._waveTimers.forEach(wave => {
             if (wave.delay > 0) {
                 wave.startTime = now;
@@ -187,7 +187,7 @@ export class GameManager extends Component {
     private scheduleAllWaves() {
         const levelModel = LevelManager.instance.levelModel;
         const waveConfig = levelModel.getCurrentWaveConfig();
-        
+
         this.clearAllWaves();
         this._waveTimers = []; // 清空计时器数组
 
@@ -198,7 +198,7 @@ export class GameManager extends Component {
                 this._currentWave++;
                 console.log(`Wave ${this._currentWave} started`);
             }, wave.delay * 1000);
-            
+
             this._waveTimers.push({
                 timer: timer,
                 startTime: Date.now(),
@@ -229,7 +229,9 @@ export class GameManager extends Component {
                     const soldier = SoldierSystem.instance.spawnSoldier(enemy.type, Camp.Enemy);
                     const soldierComp = soldier.getComponent(BaseSoldier);
                     if (soldierComp) {
-                        soldierComp.stats.level = enemy.level;
+                        const levelModel = LevelManager.instance.levelModel;
+                        soldierComp.stats.level = levelModel.gameLevel;
+                        console.log(`当前敌人士兵等级:${soldierComp.stats.level}`);
                     }
                 }, i * 500); // 每个敌人生成间隔0.5秒
             }
@@ -247,8 +249,9 @@ export class GameManager extends Component {
 
     /**游戏结束*/
     public gameOver() {
-        this.pauseGame(); 
+        this.pauseGame();
         this.clearAllWaves();
+        this._currentWave = 0;
     }
 
     /**游戏重置*/

@@ -52,8 +52,9 @@ export class BattleTop extends Component {
 
     //刷新经验
     public refreshExp() {
+        const gameLevel = LevelManager.instance.levelModel.gameLevel;
         this.bottomShop = AliensGlobalInstance.instance.bottomShop;
-        this._expThresholds = WavesConfig.instance.getWaveConfig(1).exp;
+        this._expThresholds = WavesConfig.instance.getWaveConfig(gameLevel).exp;
         this.updateLegs();
         this.updateExpDisplay();
     }
@@ -61,7 +62,7 @@ export class BattleTop extends Component {
     // 增加经验
     public addExp(amount: number) {
         this._currentExp += amount;
-        console.log("增加经验值: " + amount);
+        // console.log("增加经验值: " + amount);
         // 检查是否升级
         if (this._currentLevel <= this._expThresholds.length &&
             this._currentExp >= this._expThresholds[this._currentLevel - 1]) {

@@ -67,9 +67,6 @@ export class GameEvent {
     /** 显示游戏结算*/
     static readonly EVENT_SHOW_GAME_RESULT = 'EVENT_SHOW_GAME_RESULT';
 
-    /** 闯关成功 关卡升级*/
-    static readonly EVENT_BATTLE_SUCCESS_LEVEL_UP = 'EVENT_BATTLE_SUCCESS_LEVEL_UP';
-
     /** 闯关失败 关卡重载*/
     static readonly EVENT_BATTLE_FAIL_LEVEL_RESET = 'EVENT_BATTLE_FAIL_LEVEL_RESET';
 }

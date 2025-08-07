@@ -35,16 +35,16 @@ export class UI_Reward_Impl extends UI_Reward {
     }
 
     private updateRewardBase(): void {
-        const base = 2000;
-        const {level} = LevelManager.instance.levelModel;
-        this.rewardBase = Math.floor(base * Math.pow(1.1, level - 1));
+        const base = 200;
+        const { gameLevel } = LevelManager.instance.levelModel;
+        this.rewardBase = Math.floor(base * Math.pow(1.1, gameLevel - 1));
         // console.log(`level:${level}, rewardBase:${this.rewardBase}`);
-        this.layout.lbGold.string = `${this.rewardBase}`;
+        this.layout.lbGold.string = `X${this.rewardBase}`;
     }
 
     onClickReward(): void {
         const homeTop = AliensGlobalInstance.instance.homeTop;
-        const homeArm = AliensGlobalInstance.instance.homeArm;  
+        const homeArm = AliensGlobalInstance.instance.homeArm;
         AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('dianji'), 1.0);
         UserManager.instance.addGold(this.rewardBase);
         homeTop.getComponent(HomeTop).updateGold();

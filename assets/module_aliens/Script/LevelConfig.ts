@@ -31,6 +31,13 @@ export class LevelConfig {
                 gold: 1100,              //金币
                 loseGold: 110,           //失败时获得金币
             }
+        },
+        2: {
+            enginePos: [2, 2],            //永动机的位置
+            reward: {
+                gold: 1100,              //金币
+                loseGold: 110,           //失败时获得金币
+            }
         }
     }
 }

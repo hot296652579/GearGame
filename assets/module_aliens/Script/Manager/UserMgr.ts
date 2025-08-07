@@ -2,6 +2,7 @@ import { Node, Prefab, _decorator, assetManager, find, instantiate, sys } from '
 import { UserModel } from '../Model/UserModel';
 import { SoldierType } from '../Enum/GameEnums';
 import { GlobalConfig } from 'db://assets/start/Config/GlobalConfig';
+import { LevelManager } from './LevelMgr';
 const { ccclass, property } = _decorator;
 
 @ccclass('UserManager')
@@ -17,13 +18,15 @@ export class UserManager {
     // 本地存储键名
     private readonly SOLDIER_LEVEL_KEY = 'soldier_levels';
     private readonly CASTLE_LEVEL_KEY = 'castle_level';
+    private readonly LEVEL_GAME_KEY = 'level_game';
 
-    // 新增金币存储键名
+
+    // 金币存储键名
     private readonly GOLD_KEY = 'user_gold';
 
     initilizeModel(): void {
         this.userModel = new UserModel();
-        
+
         if (!GlobalConfig.isDebug) {
             this.loadFromLocalStorage();
         }
@@ -69,6 +72,24 @@ export class UserManager {
     saveCastleLevel(level: number): void {
         if (GlobalConfig.isDebug) return;
         sys.localStorage.setItem(this.CASTLE_LEVEL_KEY, level.toString());
+    }
+
+    //保存关卡等级到本地存储
+    saveLevel(level: number): void {
+        if (GlobalConfig.isDebug) return;
+        sys.localStorage.setItem(this.LEVEL_GAME_KEY, level.toString());
+    }
+
+    //获取当前关卡
+    getCurrentGameLevel(): number {
+        const level = sys.localStorage.getItem(this.LEVEL_GAME_KEY);
+        if (level) {
+            const levelNum = parseInt(level);
+            if (!isNaN(levelNum)) {
+                return levelNum;
+            }
+        }
+        return 1;
     }
 
     // 从本地存储获取兵种等级
