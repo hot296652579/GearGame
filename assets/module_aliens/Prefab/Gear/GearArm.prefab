@@ -1363,6 +1363,43 @@
         "__expectedType__": "cc.SpriteFrame"
       }
     ],
+    "gearColors": [
+      {
+        "__uuid__": "614bfab1-52a5-4c3f-af22-a2aa3584433c@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "beb8b987-d53b-4e3d-93da-97dcc1f271c0@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "d94ee4b2-29c9-4e34-b3f7-8dbb80fe7b44@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "a1f6216c-ef3b-4039-ad47-4c7a4e293b1d@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "5341203f-7480-48b9-99de-09146d99f225@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "1efbe3cb-ef95-4255-8bcb-1ff65847926b@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "3f252f93-356e-4a5c-af48-c5e26bd40969@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      },
+      {
+        "__uuid__": "f2548a5a-b12e-4705-befd-e4377f9bc4e4@f9941",
+        "__expectedType__": "cc.SpriteFrame"
+      }
+    ],
+    "gearColor": {
+      "__id__": 5
+    },
     "spGear": {
       "__id__": 21
     },

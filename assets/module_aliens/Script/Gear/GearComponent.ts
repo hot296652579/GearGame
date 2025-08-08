@@ -38,6 +38,12 @@ export class GearComponent extends Component implements IGearBase {
     @property(SpriteFrame)
     propFrames: SpriteFrame[] = [];
 
+    @property(SpriteFrame)
+    gearColors: SpriteFrame[] = [];
+
+    @property(Sprite)
+    gearColor: Sprite = null!;
+
     @property(Sprite)
     spGear: Sprite = null!;
 
@@ -109,11 +115,20 @@ export class GearComponent extends Component implements IGearBase {
         }
 
         this.sellPrice = Math.floor(this.legValue / 2);
+        this.initGearColor();
         this.showLegs();
     }
 
     start() {
         this.defaultStyle();
+    }
+
+    //初始化齿轮颜色
+    initGearColor(){
+        if(this.gearColors.length > 0){
+            const randomIndex = Math.floor(Math.random() * this.gearColors.length);
+            this.gearColor.spriteFrame = this.gearColors[randomIndex];
+        }
     }
 
     //显示价值

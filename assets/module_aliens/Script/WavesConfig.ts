@@ -37,13 +37,13 @@ export class WavesConfig {
         1: {
             exp: [5, 10, 13],
             waves: [
-                { delay: 1, enemies: [{ type: SoldierType.Melee, count: 1 }] },
-                { delay: 2, enemies: [{ type: SoldierType.Melee, count: 1 }] },
-                { delay: 3, enemies: [{ type: SoldierType.Melee, count: 1 }] }
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 1 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Melee, count: 1 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Melee, count: 1 }] }
             ]
         },
         2: {
-            exp: [5, 10, 13,16],
+            exp: [5, 10, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13],
             waves: [
                 { delay: 5, enemies: [{ type: SoldierType.Melee, count: 2 }] },
                 { delay: 10, enemies: [{ type: SoldierType.Melee, count: 2 }] },
@@ -51,31 +51,146 @@ export class WavesConfig {
             ]
         },
         3: {
-            exp: [5, 10, 13,16,20],
+            exp: [5, 10, 13, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
             waves: [
                 { delay: 5, enemies: [{ type: SoldierType.Melee, count: 2 }] },
                 { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 2 }] },
                 { delay: 15, enemies: [{ type: SoldierType.Melee, count: 2 }] },
-                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 1 },{ type: SoldierType.Melee, count: 1 }] }
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 1 }, { type: SoldierType.Melee, count: 1 }] }
             ]
         },
         4: {
-            exp: [5, 10, 13,16,20],
+            exp: [5, 10, 13, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
             waves: [
                 { delay: 5, enemies: [{ type: SoldierType.Melee, count: 2 }] },
                 { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 2 }] },
                 { delay: 15, enemies: [{ type: SoldierType.Melee, count: 2 }] },
-                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 1 },{ type: SoldierType.Melee, count: 1 }] }
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 1 }, { type: SoldierType.Melee, count: 1 }] }
             ]
         },
         5: {
-            exp: [5, 10, 13,16,20,24],
+            exp: [5, 10, 13, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 1 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 2 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Ranged, count: 1 }, { type: SoldierType.Melee, count: 2 }] }
+            ]
+        },
+        6: {
+            exp: [5, 10, 13, 16, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 1 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 2 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 1 }, { type: SoldierType.Ranged, count: 1 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] }
+            ]
+        },
+        7: {
+            exp: [5, 10, 13, 16, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 1 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 2 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 1 }, { type: SoldierType.Ranged, count: 1 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] }
+            ]
+        },
+        8: {
+            exp: [5, 10, 13, 16, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
             waves: [
                 { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
                 { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
                 { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
-                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 },{ type: SoldierType.Melee, count: 2 }] },
-                { delay: 25, enemies: [{ type: SoldierType.Ranged, count: 2 },{ type: SoldierType.Melee, count: 3 }] }
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 2 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 2 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] }
+            ]
+        },
+        9: {
+            exp: [5, 10, 13, 16, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 2 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 2 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] }
+            ]
+        },
+        10: {
+            exp: [5, 10, 13, 16, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 3 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] }
+            ]
+        },
+        11: {
+            exp: [5, 10, 13, 16, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 3 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] },
+                { delay: 35, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] }
+            ]
+        },
+        12: {
+            exp: [5, 10, 13, 16, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 3 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] },
+                { delay: 35, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] }
+            ]
+        },
+        13: {
+            exp: [5, 10, 13, 16, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 3 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] },
+                { delay: 35, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] }
+            ]
+        },
+        14: {
+            exp: [5, 10, 13, 16, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 3 }, { type: SoldierType.Ranged, count: 3 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] },
+                { delay: 35, enemies: [{ type: SoldierType.Ranged, count: 3 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 1 }] }
+            ]
+        },
+        15: {
+            exp: [5, 10, 13, 16, 20, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25],
+            waves: [
+                { delay: 5, enemies: [{ type: SoldierType.Melee, count: 3 }] },
+                { delay: 10, enemies: [{ type: SoldierType.Ranged, count: 3 }] },
+                { delay: 15, enemies: [{ type: SoldierType.Super, count: 2 }] },
+                { delay: 20, enemies: [{ type: SoldierType.Ranged, count: 2 }, { type: SoldierType.Melee, count: 3 }] },
+                { delay: 25, enemies: [{ type: SoldierType.Super, count: 2 }, { type: SoldierType.Ranged, count: 3 }] },
+                { delay: 30, enemies: [{ type: SoldierType.Ranged, count: 3 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 2 }] },
+                { delay: 35, enemies: [{ type: SoldierType.Ranged, count: 3 }, { type: SoldierType.Melee, count: 3 }, { type: SoldierType.Super, count: 2 }] }
             ]
         }
     };

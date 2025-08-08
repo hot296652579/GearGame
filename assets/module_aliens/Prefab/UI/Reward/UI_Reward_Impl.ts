@@ -9,6 +9,7 @@ import { UserManager } from "../../../Script/Manager/UserMgr";
 import { AliensGlobalInstance } from "../../../Script/AliensGlobalInstance";
 import { HomeTop } from "../../../Script/UI/HomeTop";
 import { HomeArm } from "../../../Script/UI/HomeArm";
+import { GameUtil } from "../../../Script/GameUtil";
 
 export class UI_Reward_Impl extends UI_Reward {
     rewardBase: number = 0; //基础奖励
@@ -47,11 +48,13 @@ export class UI_Reward_Impl extends UI_Reward {
         const homeArm = AliensGlobalInstance.instance.homeArm;
         AliensAudioMgr.playOneShot(AliensAudioMgr.getMusicPathByName('dianji'), 1.0);
         UserManager.instance.addGold(this.rewardBase);
+        homeTop.getComponent(HomeTop).addGoldEffect();
         homeTop.getComponent(HomeTop).updateGold();
         homeArm.getComponent(HomeArm).showArmUI();
         homeArm.getComponent(HomeArm).showCastleUI();
         this.destoryMyself();
     }
+
 
     private destoryMyself(): void {
         Tween.stopAllByTarget(this.node)

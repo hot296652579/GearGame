@@ -190,6 +190,7 @@ export class GameManager extends Component {
 
         this.clearAllWaves();
         this._waveTimers = []; // 清空计时器数组
+        this._totalWaves = waveConfig.waves.length;
 
         // 调度所有波次
         waveConfig.waves.forEach((wave, index) => {
@@ -197,6 +198,14 @@ export class GameManager extends Component {
                 this.spawnWaveEnemies(wave);
                 this._currentWave++;
                 console.log(`Wave ${this._currentWave} started`);
+
+                // 如果是最后一波，设置循环生成
+                if (this._currentWave >= this._totalWaves) {
+                    const gameLevel = levelModel.gameLevel;
+                    if(gameLevel > 1){
+                        this.scheduleLastWave();
+                    }
+                }
             }, wave.delay * 1000);
 
             this._waveTimers.push({
@@ -205,8 +214,28 @@ export class GameManager extends Component {
                 delay: wave.delay * 1000
             });
         });
+    }
 
-        this._totalWaves = waveConfig.waves.length;
+    // 循环生成最后一波敌人
+    private scheduleLastWave() {
+        const levelModel = LevelManager.instance.levelModel;
+        const waveConfig = levelModel.getCurrentWaveConfig();
+        const lastWave = waveConfig.waves[waveConfig.waves.length - 1];
+
+        // 清除之前的定时器
+        this.clearAllWaves();
+
+        // 设置循环定时器
+        const timer = setInterval(() => {
+            this.spawnWaveEnemies(lastWave);
+            console.log(`Last wave spawned again`);
+        }, 5000); // 每5秒生成一次
+
+        this._waveTimers.push({
+            timer: timer,
+            startTime: Date.now(),
+            delay: 5000
+        });
     }
 
     //清除所有定时器
@@ -214,6 +243,7 @@ export class GameManager extends Component {
         this._waveTimers.forEach(wave => {
             if (wave.timer) {
                 clearTimeout(wave.timer);
+                clearInterval(wave.timer); // 同时清除interval
             }
         });
         this._waveTimers = [];

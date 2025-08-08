@@ -278,10 +278,11 @@ export class BottomShop extends Component {
                     }
                     
                     const targetGearComp = targetGear.getComponent(GearComponent);
+                    const levelLegs = LevelManager.instance.getLevelBaseLegs();
                     
                     // 检查是否可以合并
                     if (gearComp.type === targetGearComp?.type && 
-                        gearComp.level === targetGearComp?.level) {
+                        gearComp.level === targetGearComp?.level && gearComp.legValue <= levelLegs) {
                         // 执行合并
                         if (gearComp.mergeWith(targetGearComp)) {
                             // 合并成功，更新当前齿轮位置

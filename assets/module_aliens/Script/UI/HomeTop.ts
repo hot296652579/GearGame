@@ -1,12 +1,16 @@
-import { _decorator, Component, find, Label, Node, NodeEventType } from 'cc';
+import { _decorator, Component, find, Label, Node, NodeEventType, view } from 'cc';
 import { UserManager } from '../Manager/UserMgr';
 import { AliensAudioMgr } from '../Manager/AliensAudioMgr';
 import { tgxUIMgr } from 'db://assets/core_tgx/tgx';
 import { UI_Reward, UI_Setting } from 'db://assets/scripts/UIDef';
+import { GameUtil } from '../GameUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('HomeTop')
 export class HomeTop extends Component {
+
+    @property(Node)
+    originStart: Node = null; // 初始位置
 
     @property(Label)
     lbGold: Label = null;
@@ -51,6 +55,13 @@ export class HomeTop extends Component {
         const gold = UserManager.instance.userModel.glod;
         console.log(`玩家剩余金币: ${UserManager.instance.userModel.glod}`)
         this.lbGold.string = gold.toString();
+    }
+
+    //添加金币特效
+    addGoldEffect(){
+        const from = this.originStart;
+        const to = this.lbGold.node;
+        GameUtil.flyToPosition(from, to, 5, 'gold');
     }
 }
 
