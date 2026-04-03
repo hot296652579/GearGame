@@ -77,7 +77,7 @@ export class Start extends Component {
             localStorage.setItem("lastLeaveTime", timestamp.toString());
         });
 
-        console.log('start load config....1');
+        console.log('start load config....11');
     }
 
     start() {
