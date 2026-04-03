@@ -1,14 +1,14 @@
-import { _decorator, assetManager, Component, director, game, Label, Prefab, Node, AssetManager, Asset, PhysicsSystem, PhysicsSystem2D, EPhysics2DDrawFlags, AudioClip, ProgressBar, SpriteFrame } from 'cc';
-import { tgxModuleContext, tgxUIMgr, tgxUITips, tgxUIWaiting } from '../core_tgx/tgx';
-import { GameUILayers, GameUILayerNames } from '../scripts/GameUILayers';
+import { _decorator, assetManager, AssetManager, AudioClip, Component, director, EPhysics2DDrawFlags, game, Label, PhysicsSystem2D, Prefab, ProgressBar, SpriteFrame } from 'cc';
+import { tgxModuleContext, tgxUIMgr, tgxUIWaiting } from '../core_tgx/tgx';
+import { GameUILayerNames, GameUILayers } from '../scripts/GameUILayers';
 
-import { ModuleDef } from '../scripts/ModuleDef';
-import { SceneDef } from '../scripts/SceneDef';
-import { JsonUtil } from '../core_tgx/base/utils/JsonUtil';
 import { GtagMgr, GtagType } from '../core_tgx/base/GtagMgr';
 import { AdvertMgr } from '../core_tgx/base/ad/AdvertMgr';
-import { GlobalConfig } from './Config/GlobalConfig';
+import { JsonUtil } from '../core_tgx/base/utils/JsonUtil';
 import { GlobalMgr } from '../scripts/GlobalMgr';
+import { ModuleDef } from '../scripts/ModuleDef';
+import { SceneDef } from '../scripts/SceneDef';
+import { GlobalConfig } from './Config/GlobalConfig';
 const { ccclass, property } = _decorator;
 
 const _preloadBundles = [ModuleDef.BASIC, ModuleDef.MODULE_ALIENS];
@@ -76,6 +76,8 @@ export class Start extends Component {
             const timestamp = Date.now(); // 获取当前时间戳（毫秒）
             localStorage.setItem("lastLeaveTime", timestamp.toString());
         });
+
+        console.log('start load config.');
     }
 
     start() {
